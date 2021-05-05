@@ -22,9 +22,9 @@ public class SpotifyConnect {
     private final AuthorizationCodeUriRequest.Builder authorizationCodeUriRequestBuilder;
 
     public SpotifyConnect(
-            @Value("${spotify.api.clientId}") String clientId,
-            @Value("${spotify.api.secretId}") String secretId,
-            @Value("${spotify.api.redirectUri}") String redirectUri
+            @Value("spotify.api.clientId") String clientId,
+            @Value("spotify.api.secretId") String secretId,
+            @Value("spotify.api.redirectUri") String redirectUri
     ) {
         this.spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
