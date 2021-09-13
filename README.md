@@ -2,7 +2,8 @@
 [![Support Server](https://img.shields.io/discord/591914197219016707.svg?color=7289da&label=JOS&logo=discord&style=flat-square)](https://discord.gg/HFEqa67j)
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![Generic badge](https://img.shields.io/badge/CircleCI-passing-<COLOR>.svg)](https://shields.io/)
+[![CircleCI](https://circleci.com/gh/reol224/spotify-clone-jos/tree/master.svg?style=shield)](https://circleci.com/gh/reol224/spotify-clone-jos/tree/master)
+
 
 
 
