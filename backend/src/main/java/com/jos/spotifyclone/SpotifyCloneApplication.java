@@ -1,6 +1,5 @@
-package com.jos.spotifyclone;
+package src.main.java.com.jos.spotifyclone;
 
-import com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 
 @SpringBootApplication
 @EnableScheduling

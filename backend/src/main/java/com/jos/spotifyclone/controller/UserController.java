@@ -1,8 +1,6 @@
-package com.jos.spotifyclone.controller;
+package src.main.java.com.jos.spotifyclone.controller;
 
 
-import com.jos.spotifyclone.model.*;
-import com.jos.spotifyclone.services.SpotifyConnect;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.enums.ModelObjectType;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import src.main.java.com.jos.spotifyclone.model.*;
+import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 import java.io.IOException;
 import java.util.*;

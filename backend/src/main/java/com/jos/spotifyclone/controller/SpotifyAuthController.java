@@ -1,6 +1,5 @@
-package com.jos.spotifyclone.controller;
+package src.main.java.com.jos.spotifyclone.controller;
 
-import com.jos.spotifyclone.services.SpotifyConnect;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
+import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 import java.io.IOException;
 

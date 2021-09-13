@@ -1,4 +1,4 @@
-package com.jos.spotifyclone.model;
+package src.main.java.com.jos.spotifyclone.model;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.model_objects.specification.Image;

@@ -1,4 +1,4 @@
-package com.jos.spotifyclone.model;
+package src.main.java.com.jos.spotifyclone.model;
 
 import com.wrapper.spotify.model_objects.specification.ExternalUrl;
 import com.wrapper.spotify.model_objects.specification.Image;

@@ -1,8 +1,6 @@
-package com.jos.spotifyclone.controller;
+package src.main.java.com.jos.spotifyclone.controller;
 
 import com.google.gson.JsonArray;
-import com.jos.spotifyclone.model.TrackModel;
-import com.jos.spotifyclone.services.SpotifyConnect;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.IPlaylistItem;
 import com.wrapper.spotify.model_objects.miscellaneous.Device;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import src.main.java.com.jos.spotifyclone.model.TrackModel;
+import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 import java.io.IOException;
 import java.util.ArrayList;
