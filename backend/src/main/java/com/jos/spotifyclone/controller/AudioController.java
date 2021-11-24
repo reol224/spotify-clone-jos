@@ -25,14 +25,13 @@ public class AudioController {
     /**
      * http://localhost:8080/api/audio/analysis?id=01iyCAUm8EvOFqVWYJ3dVX
      *
-     * @param id
-     * Required.
-     * The Spotify ID for the track.
+     * @param id Required.
+     *           The Spotify ID for the track.
      */
     @GetMapping("/analysis")
     public AudioAnalysis getAudioAnalysisForTrack(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
         AudioAnalysis result = null;
-        try{
+        try {
             result = spotifyConnect.getSpotifyApi().getAudioAnalysisForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
             System.out.println("Error: " + e.getCause().getMessage());
@@ -45,14 +44,13 @@ public class AudioController {
     /**
      * http://localhost:8080/api/audio/audio-features/track?id=01iyCAUm8EvOFqVWYJ3dVX
      *
-     * @param id
-     * Required.
-     * The Spotify ID for the track.
+     * @param id Required.
+     *           The Spotify ID for the track.
      */
     @GetMapping("/audio-features/track")
     public AudioFeatures getAudioFeaturesForTrack(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
         AudioFeatures result = null;
-        try{
+        try {
             result = spotifyConnect.getSpotifyApi().getAudioFeaturesForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
             System.out.println("Error: " + e.getCause().getMessage());
@@ -65,10 +63,9 @@ public class AudioController {
     /**
      * http://localhost:8080/api/audio/audio-features/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
      *
-     * @param ids
-     * Required.
-     * A comma-separated list of the Spotify IDs for the tracks.
-     * Maximum: 100 IDs.
+     * @param ids Required.
+     *            A comma-separated list of the Spotify IDs for the tracks.
+     *            Maximum: 100 IDs.
      */
     @GetMapping("/audio-features/tracks")
     public AudioFeatures[] getAudioFeaturesForSeveralTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {

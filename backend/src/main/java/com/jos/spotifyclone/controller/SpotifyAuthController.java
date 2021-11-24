@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RequestMapping("api/spotify-auth")
 @RestController
-public class SpotifyAuthController  {
+public class SpotifyAuthController {
 
     @Autowired
     private SpotifyConnect spotifyConnect;

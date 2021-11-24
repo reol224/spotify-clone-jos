@@ -66,14 +66,14 @@ public class BrowseController {
         try {
             var response = spotifyConnect.getSpotifyApi().getListOfNewReleases().build().executeAsync().join();
             List<AlbumModel> list = new ArrayList<>();
-            for(AlbumSimplified album : response.getItems()){
+            for (AlbumSimplified album : response.getItems()) {
                 String name = album.getName();
                 Image[] image = album.getImages();
                 ExternalUrl externalUrl = album.getExternalUrls();
 
                 List<Object> artistsList = new ArrayList<>();
                 var artists = album.getArtists();
-                for(ArtistSimplified artist : artists){
+                for (ArtistSimplified artist : artists) {
                     artistsList.add(artist.getName());
                     artistsList.add(artist.getExternalUrls());
                 }
@@ -90,7 +90,7 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/album?id=5zT1JLIj9E57p3e1rFm9Uq
     @GetMapping("/album")
-    public Map<String, Object> getAlbum(@RequestParam String id){
+    public Map<String, Object> getAlbum(@RequestParam String id) {
         Map<String, Object> map = new HashMap<>();
         try {
             var response = spotifyConnect.getSpotifyApi().getAlbum(id).build().executeAsync().join();
@@ -103,7 +103,7 @@ public class BrowseController {
 
             List<Object> tracks = new ArrayList<>();
             TrackSimplified[] tracksItems = albums.getItems();
-            for(TrackSimplified track : tracksItems){
+            for (TrackSimplified track : tracksItems) {
                 tracks.add(track.getName());
                 tracks.add(track.getExternalUrls());
             }
@@ -111,7 +111,7 @@ public class BrowseController {
 
             List<Object> artistList = new ArrayList<>();
             var artists = response.getArtists();
-            for(ArtistSimplified artist : artists){
+            for (ArtistSimplified artist : artists) {
                 artistList.add(artist.getName());
                 artistList.add(artist.getExternalUrls());
             }
@@ -135,13 +135,13 @@ public class BrowseController {
         try {
             var response = spotifyConnect.getSpotifyApi().getAlbumsTracks(album_id).build().executeAsync().join();
             List<TrackModel> list = new ArrayList<>();
-            for(TrackSimplified albumTrack : response.getItems()){
+            for (TrackSimplified albumTrack : response.getItems()) {
                 String name = albumTrack.getName();
                 ExternalUrl externalUrls = albumTrack.getExternalUrls();
 
                 List<Object> artistsList = new ArrayList<>();
                 var artists = albumTrack.getArtists();
-                for(ArtistSimplified artist : artists){
+                for (ArtistSimplified artist : artists) {
                     artistsList.add(artist.getName());
                     artistsList.add(artist.getExternalUrls());
                 }
@@ -165,14 +165,14 @@ public class BrowseController {
         try {
             var response = spotifyConnect.getSpotifyApi().getSeveralAlbums(ids).build().executeAsync().join();
             List<AlbumModel> list = new ArrayList<>();
-            for(Album album : response){
+            for (Album album : response) {
                 String name = album.getName();
                 Image[] image = album.getImages();
                 ExternalUrl externalUrl = album.getExternalUrls();
 
                 List<Object> artistList = new ArrayList<>();
                 var artists = album.getArtists();
-                for(ArtistSimplified artist : artists){
+                for (ArtistSimplified artist : artists) {
                     artistList.add(artist.getName());
                     artistList.add(artist.getExternalUrls());
                 }
@@ -217,14 +217,14 @@ public class BrowseController {
         try {
             var response = spotifyConnect.getSpotifyApi().getArtistsAlbums(artist_id).build().executeAsync().join();
             List<AlbumModel> list = new ArrayList<>();
-            for(AlbumSimplified artistAlbum : response.getItems()){
+            for (AlbumSimplified artistAlbum : response.getItems()) {
                 String name = artistAlbum.getName();
                 Image[] image = artistAlbum.getImages();
                 ExternalUrl externalUrl = artistAlbum.getExternalUrls();
 
                 List<Object> artistList = new ArrayList<>();
                 ArtistSimplified[] artists = artistAlbum.getArtists();
-                for(ArtistSimplified artist : artists){
+                for (ArtistSimplified artist : artists) {
                     artistList.add(artist.getName());
                     artistList.add(artist.getExternalUrls());
                 }
@@ -246,16 +246,16 @@ public class BrowseController {
         Map<String, Object> map = new HashMap<>();
         try {
             CountryCode countryCode = CountryCode.US;
-            Track[] topTracks = spotifyConnect.getSpotifyApi().getArtistsTopTracks(artist_id,countryCode).build().executeAsync().join();
+            Track[] topTracks = spotifyConnect.getSpotifyApi().getArtistsTopTracks(artist_id, countryCode).build().executeAsync().join();
 
             List<TrackModel> list = new ArrayList<>();
-            for(Track track : topTracks){
+            for (Track track : topTracks) {
                 String name = track.getName();
                 ExternalUrl externalUrls = track.getExternalUrls();
 
                 List<Object> artistsList = new ArrayList<>();
                 ArtistSimplified[] artists = track.getArtists();
-                for(ArtistSimplified artist : artists){
+                for (ArtistSimplified artist : artists) {
                     artistsList.add(artist.getName());
                 }
 
@@ -265,7 +265,7 @@ public class BrowseController {
                 String nameAlbum = albums.getName();
                 List<Object> artistAlbumList = new ArrayList<>();
                 ArtistSimplified[] artistOfAlbum = albums.getArtists();
-                for(ArtistSimplified ar : artistOfAlbum){
+                for (ArtistSimplified ar : artistOfAlbum) {
                     artistAlbumList.add(ar.getName());
                     artistAlbumList.add(ar.getExternalUrls());
                 }
@@ -291,7 +291,7 @@ public class BrowseController {
         Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().execute();
 
         List<ArtistModel> list = new ArrayList<>();
-        for(Artist artist : response){
+        for (Artist artist : response) {
             ExternalUrl externalUrl = artist.getExternalUrls();
             Followers followers = artist.getFollowers();
             String[] genres = artist.getGenres();
@@ -311,7 +311,7 @@ public class BrowseController {
         Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().execute();
 
         List<ArtistModel> list = new ArrayList<>();
-        for(Artist artist : response){
+        for (Artist artist : response) {
             ExternalUrl externalUrl = artist.getExternalUrls();
             Followers followers = artist.getFollowers();
             String[] genres = artist.getGenres();
@@ -345,7 +345,7 @@ public class BrowseController {
         var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().execute();
 
         List<Object> list = new ArrayList<>();
-        for(PlaylistSimplified playlist : response.getItems()){
+        for (PlaylistSimplified playlist : response.getItems()) {
             ExternalUrl externalUrl = playlist.getExternalUrls();
             String name = playlist.getName();
 
@@ -362,7 +362,7 @@ public class BrowseController {
         var response = spotifyConnect.getSpotifyApi().getListOfCategories().build().execute();
 
         List<String> list = new ArrayList<>();
-        for(Category category : response.getItems()){
+        for (Category category : response.getItems()) {
             String href = category.getHref();
             String name = category.getName();
 
@@ -450,7 +450,7 @@ public class BrowseController {
         var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().execute();
 
         List<EpisodeModel> list = new ArrayList<>();
-        for(EpisodeSimplified episode : response.getItems()){
+        for (EpisodeSimplified episode : response.getItems()) {
             String name = episode.getName();
             String[] language = episode.getLanguages();
             Image[] images = episode.getImages();
@@ -475,7 +475,7 @@ public class BrowseController {
 
         List<Object> artistsList = new ArrayList<>();
         ArtistSimplified[] artists = response.getArtists();
-        for(ArtistSimplified artist : artists){
+        for (ArtistSimplified artist : artists) {
             artistsList.add(artist.getName());
             artistsList.add(artist.getExternalUrls());
         }
@@ -487,7 +487,7 @@ public class BrowseController {
         ExternalUrl externalUrlAlbum = albums.getExternalUrls();
         List<Object> artistOfAlbumList = new ArrayList<>();
         ArtistSimplified[] artistOfAlbum = albums.getArtists();
-        for(ArtistSimplified artistSimplified : artistOfAlbum){
+        for (ArtistSimplified artistSimplified : artistOfAlbum) {
             artistOfAlbumList.add(artistSimplified.getName());
             artistOfAlbumList.add(artistSimplified.getExternalUrls());
         }
@@ -506,13 +506,13 @@ public class BrowseController {
         Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().execute();
 
         List<TrackModel> list = new ArrayList<>();
-        for(Track track : response){
+        for (Track track : response) {
             String name = track.getName();
             ExternalUrl externalUrls = track.getExternalUrls();
 
             List<Object> artistsList = new ArrayList<>();
             ArtistSimplified[] artists = track.getArtists();
-            for(ArtistSimplified artist : artists){
+            for (ArtistSimplified artist : artists) {
                 artistsList.add(artist.getName());
             }
 
@@ -523,7 +523,7 @@ public class BrowseController {
             ExternalUrl externalUrlAlbum = albums.getExternalUrls();
             List<Object> artistOfAlbumList = new ArrayList<>();
             ArtistSimplified[] artistOfAlbum = albums.getArtists();
-            for(ArtistSimplified artistSimplified : artistOfAlbum){
+            for (ArtistSimplified artistSimplified : artistOfAlbum) {
                 artistOfAlbumList.add(artistSimplified.getName());
                 artistOfAlbumList.add(artistSimplified.getExternalUrls());
             }
@@ -551,17 +551,17 @@ public class BrowseController {
         List<AlbumModel> streamAlbum = Arrays.stream(albums)
                 .map(i -> new AlbumModel(i.getName(),
                         Arrays.stream(i.getArtists())
-                .map(ArtistSimplified::getName)
-                .collect(Collectors.toList()), i.getImages(), i.getExternalUrls()))
+                                .map(ArtistSimplified::getName)
+                                .collect(Collectors.toList()), i.getImages(), i.getExternalUrls()))
                 .collect(Collectors.toList());
 
 
         //for loop
         List<AlbumModel> newList = new ArrayList<>();
-        for(AlbumSimplified i: albums){
+        for (AlbumSimplified i : albums) {
             List<Object> artists = new ArrayList<>();
             ArtistSimplified[] artistArray = i.getArtists();
-            for(ArtistSimplified artistSimplified : artistArray){
+            for (ArtistSimplified artistSimplified : artistArray) {
                 artists.add(artistSimplified.getName());
                 artists.add(artistSimplified.getExternalUrls());
             }

@@ -31,7 +31,7 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchArtists(id).build().execute();
 
         List<ArtistModel> list = new ArrayList<>();
-        for(Artist artist : response.getItems()){
+        for (Artist artist : response.getItems()) {
             ExternalUrl externalUrl = artist.getExternalUrls();
             Followers followers = artist.getFollowers();
             String[] genres = artist.getGenres();
@@ -52,20 +52,20 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchAlbums(id).build().execute();
 
         List<AlbumModel> list = new ArrayList<>();
-        for(AlbumSimplified album : response.getItems()){
+        for (AlbumSimplified album : response.getItems()) {
             String name = album.getName();
             List<Object> artist = new ArrayList<>();
             Image[] image = album.getImages();
             ExternalUrl externalUrl = album.getExternalUrls();
 
-            ArtistSimplified[] artistArray  = album.getArtists();
-            for(ArtistSimplified artistSimplified : artistArray){
+            ArtistSimplified[] artistArray = album.getArtists();
+            for (ArtistSimplified artistSimplified : artistArray) {
                 artist.add(artistSimplified.getName());
                 artist.add(artistSimplified.getExternalUrls());
             }
             list.add(new AlbumModel(name, artist, image, externalUrl));
         }
-        
+
         Map<String, Object> map = new HashMap<>();
         map.put("Album", list);
         return map;
@@ -77,7 +77,7 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchEpisodes(id).build().execute();
 
         List<EpisodeModel> list = new ArrayList<>();
-        for(EpisodeSimplified search : response.getItems()){
+        for (EpisodeSimplified search : response.getItems()) {
             String name = search.getName();
             String[] language = search.getLanguages();
             Image[] images = search.getImages();
@@ -97,7 +97,7 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchShows(id).build().execute();
 
         List<ShowModel> list = new ArrayList<>();
-        for(ShowSimplified show : response.getItems()){
+        for (ShowSimplified show : response.getItems()) {
             String description = show.getDescription();
             String name = show.getName();
             ExternalUrl externalUrls = show.getExternalUrls();
@@ -116,7 +116,7 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchPlaylists(id).build().execute();
 
         List<PlaylistModel> list = new ArrayList<>();
-        for(PlaylistSimplified playlist : response.getItems()){
+        for (PlaylistSimplified playlist : response.getItems()) {
             String href = playlist.getHref();
             ExternalUrl externalUrls = playlist.getExternalUrls();
             String playlistName = playlist.getName();
@@ -137,18 +137,18 @@ public class SearchController {
         var response = spotifyConnect.getSpotifyApi().searchTracks(id).build().execute();
 
         List<TrackModel> list = new ArrayList<>();
-        for(Track track : response.getItems()){
+        for (Track track : response.getItems()) {
             String name = track.getName();
             ExternalUrl externalUrls = track.getExternalUrls();
 
             List<Object> artistsList = new ArrayList<>();
             ArtistSimplified[] artists = track.getArtists();
-            for(ArtistSimplified artistSimplified : artists){
+            for (ArtistSimplified artistSimplified : artists) {
                 artistsList.add(artistSimplified.getName());
                 artistsList.add(artistSimplified.getExternalUrls());
             }
 
-            List<AlbumModel> albumList  = new ArrayList<>();
+            List<AlbumModel> albumList = new ArrayList<>();
             String albumName = track.getAlbum().getName();
             Image[] image = track.getAlbum().getImages();
             ExternalUrl externalUrlsAlbum = track.getAlbum().getExternalUrls();

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
+
 @Component
 public class SpotifyConnect {
     private final SpotifyApi spotifyApi;
@@ -30,7 +31,7 @@ public class SpotifyConnect {
                 .setClientSecret(secretId)
                 .setRedirectUri(SpotifyHttpManager.makeUri(redirectUri))
                 .build();
-       
+
         this.authorizationCodeUriRequestBuilder = spotifyApi.authorizationCodeUri().scope("user-read-recently-played " +
                 "user-read-playback-position " +
                 "user-top-read " +
@@ -55,21 +56,21 @@ public class SpotifyConnect {
     public void openAuthWindow() {
         final URI uri = authorizationCodeUriRequestBuilder.build().execute();
         Runtime runtime = Runtime.getRuntime();
-        if(SystemUtils.IS_OS_WINDOWS){
+        if (SystemUtils.IS_OS_WINDOWS) {
             try {
                 runtime.exec("rundll32 url.dll,FileProtocolHandler " + uri);
             } catch (IOException e) {
                 System.out.println("If you're running on Windows and read this it looks like we can't open your browser...");
             }
-       }
-        if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+        }
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             try {
                 runtime.exec("open " + uri);
             } catch (IOException e) {
                 System.out.println("If you're running on MacOS and read this it looks like we can't open your browser...");
             }
         }
-        if(SystemUtils.IS_OS_LINUX){
+        if (SystemUtils.IS_OS_LINUX) {
             try {
                 runtime.exec(new String[]{"bash", "-c", "xdg-open " + uri});
             } catch (IOException e) {
@@ -89,10 +90,11 @@ public class SpotifyConnect {
     }
 
     @Scheduled(cron = "@hourly")
-    public void refreshAuthToken(){
+    public void refreshAuthToken() {
         spotifyApi.setAccessToken(spotifyApi.getAccessToken());
         spotifyApi.setRefreshToken(spotifyApi.getRefreshToken());
     }
+
     public SpotifyApi getSpotifyApi() {
         return spotifyApi;
     }
