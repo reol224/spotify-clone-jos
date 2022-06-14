@@ -1,6 +1,6 @@
 import "./App.css";
-import { Playlists, Links, Home, Browse, Radio, UserBubble } from "./components";
-import { Route, Switch } from "react-router-dom";
+import {Browse, Home, Links, Playlists, Radio, UserBubble} from "./components";
+import {Route, Switch} from "react-router-dom";
 
 function App() {
   return (

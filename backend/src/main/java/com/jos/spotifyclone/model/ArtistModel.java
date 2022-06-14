@@ -1,8 +1,9 @@
 package src.main.java.com.jos.spotifyclone.model;
 
-import com.wrapper.spotify.model_objects.specification.ExternalUrl;
-import com.wrapper.spotify.model_objects.specification.Followers;
-import com.wrapper.spotify.model_objects.specification.Image;
+
+import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
+import se.michaelthelin.spotify.model_objects.specification.Followers;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 public class ArtistModel {
     ExternalUrl externalUrl;

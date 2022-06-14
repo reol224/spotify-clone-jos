@@ -1,7 +1,7 @@
 package src.main.java.com.jos.spotifyclone.model;
 
-import com.wrapper.spotify.model_objects.specification.ExternalUrl;
-import com.wrapper.spotify.model_objects.specification.Image;
+import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 public class EpisodeModel {
     String name;

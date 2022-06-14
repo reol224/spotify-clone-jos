@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 
-import java.util.*;
 
 @SpringBootApplication
 @EnableScheduling

@@ -1,6 +1,6 @@
 import React from "react";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import "./Links.css";
 
 function HomeIcon(props) {
