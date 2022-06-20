@@ -1,9 +1,7 @@
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/)
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![CircleCI](https://circleci.com/gh/reol224/spotify-clone-jos/tree/master.svg?style=shield)](https://circleci.com/gh/reol224/spotify-clone-jos/tree/master)
-
-
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/reol224/spotify-clone-jos/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/reol224/spotify-clone-jos/tree/master)
 
 
 # Spotify Clone JOS
