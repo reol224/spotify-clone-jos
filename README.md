@@ -26,12 +26,12 @@ First off, thank you for wanting to contribute! :thumbsup:
 *  Follow [this](https://www.dataschool.io/how-to-contribute-on-github/amp/) guide if the above does not make sense!
 
 # How to setup Spotify Auth
-In order for this to work you need to have a Spotify [Application](https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app) registered.
+In order for this to work you need to have a Spotify [Application](https://developer.spotify.com/documentation/general/guides/authorization/app-settings/) registered.
 
-1) [Go here](https://developer.spotify.com/documentation/general/guides/app-settings/#register-your-app) and register an application
+1) [Go here](https://developer.spotify.com/documentation/general/guides/authorization/app-settings/) and register an application
 2) This will allow you to get a `client id` and `secret id` which you need to authenticate to Spotify.
 3) Replace your `client id` and `secret id` in the [`application.properties`](https://github.com/IVIURRAY/spotify-clone-jos/blob/master/backend/src/main/resources/application.properties) file.
-4) Make sure you add this url `http://localhost:8080/api/spotify-auth` in the Spotify Dashboar, otherwise it will not work!
+4) Make sure you add this url `http://localhost:8080/api/spotify-auth` in the Spotify Dashboard, otherwise it will not work!
 
 # How to run the backend?
 1) Make sure your `client id` and `secret id` are in [application.properties](backend/src/main/resources/application.properties).
