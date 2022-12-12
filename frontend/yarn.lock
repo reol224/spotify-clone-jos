@@ -1606,7 +1606,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.12.1"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.1.tgz"
   dependencies:
@@ -2347,7 +2347,7 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/jest-dom@^5.16.4":
+"@testing-library/jest-dom@^5.16.5":
   version "5.16.5"
   resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.16.5.tgz#3912846af19a29b2dbf32a6ae9c31ef52580074e"
   dependencies:
@@ -3304,7 +3304,7 @@ bfj@^7.0.2:
 
 big.js@^5.2.2:
   version "5.2.2"
-  resolved "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz"
+  resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
 
 binary-extensions@^2.0.0:
   version "2.2.0"
@@ -4225,7 +4225,7 @@ emoji-regex@^9.2.2:
 
 emojis-list@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
 
 encodeurl@~1.0.2:
   version "1.0.2"
@@ -6083,13 +6083,7 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-json5@^2.1.2:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/json5/-/json5-2.2.0.tgz"
-  dependencies:
-    minimist "^1.2.5"
-
-json5@^2.2.0, json5@^2.2.1:
+json5@^2.1.2, json5@^2.2.0, json5@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
 
@@ -6238,8 +6232,8 @@ loader-runner@^4.2.0:
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.3.0.tgz#c1b4a163b99f614830353b16755e7149ac2314e1"
 
 loader-utils@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/loader-utils/-/loader-utils-2.0.0.tgz"
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
   dependencies:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
@@ -6415,13 +6409,6 @@ mimic-fn@^2.1.0:
 min-indent@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/min-indent/-/min-indent-1.0.1.tgz"
-
-mini-create-react-context@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/mini-create-react-context/-/mini-create-react-context-0.4.1.tgz"
-  dependencies:
-    "@babel/runtime" "^7.12.1"
-    tiny-warning "^1.0.3"
 
 mini-css-extract-plugin@^2.4.5:
   version "2.6.1"
@@ -7572,27 +7559,26 @@ react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.11.0.tgz#77198b944733f0f1f1a90e791de4541f9f074046"
 
-react-router-dom@^5.3.3:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-5.3.3.tgz#8779fc28e6691d07afcaf98406d3812fe6f11199"
+react-router-dom@^5.3.4:
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-5.3.4.tgz#2ed62ffd88cae6db134445f4a0c0ae8b91d2e5e6"
   dependencies:
     "@babel/runtime" "^7.12.13"
     history "^4.9.0"
     loose-envify "^1.3.1"
     prop-types "^15.6.2"
-    react-router "5.3.3"
+    react-router "5.3.4"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router@5.3.3:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-5.3.3.tgz#8e3841f4089e728cf82a429d92cdcaa5e4a3a288"
+react-router@5.3.4:
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-5.3.4.tgz#8ca252d70fcc37841e31473c7a151cf777887bb5"
   dependencies:
     "@babel/runtime" "^7.12.13"
     history "^4.9.0"
     hoist-non-react-statics "^3.1.0"
     loose-envify "^1.3.1"
-    mini-create-react-context "^0.4.0"
     path-to-regexp "^1.7.0"
     prop-types "^15.6.2"
     react-is "^16.6.0"
@@ -8558,7 +8544,7 @@ tiny-invariant@^1.0.2:
   version "1.1.0"
   resolved "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.1.0.tgz"
 
-tiny-warning@^1.0.0, tiny-warning@^1.0.2, tiny-warning@^1.0.3:
+tiny-warning@^1.0.0, tiny-warning@^1.0.2:
   version "1.0.3"
   resolved "https://registry.npmjs.org/tiny-warning/-/tiny-warning-1.0.3.tgz"
 
