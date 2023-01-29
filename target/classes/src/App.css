@@ -1,0 +1,45 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  background-color: #181a1b;
+  min-height: 100vh;
+}
+
+.middle-panel {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding: 10px;
+}
+
+.header-panel {
+  flex-direction: row;
+}
+
+.header-item {
+  width: 50%;
+  float: left;
+}
+
+.header-item-2 {
+  width: 48%;
+  float: left;
+  text-align: right;
+  font-size: 14px;
+  justify-content: right;
+}
+
+.body-panel {
+  flex-direction: row;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: #181818;
+  color: grey;
+  max-width: 18%;
+  padding-left: 2%;
+}

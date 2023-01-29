@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "spotify.api.clientId",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.clientId."
+    },
+    {
+      "name": "spotify.api.secretId",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.secretId."
+    },
+    {
+      "name": "spotify.api.redirectUri",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.redirectUri."
+    },
+    {
+      "name": "spotify.api.frontendUrl",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.frontendUrl."
+    }
+  ] }

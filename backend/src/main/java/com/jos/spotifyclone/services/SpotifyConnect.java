@@ -16,11 +16,15 @@ import se.michaelthelin.spotify.requests.authorization.authorization_code.Author
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Component
 public class SpotifyConnect {
     private final SpotifyApi spotifyApi;
     private final AuthorizationCodeUriRequest.Builder authorizationCodeUriRequestBuilder;
+
+    public static final Logger logger = Logger.getLogger(SpotifyConnect.class.getName());
 
     public SpotifyConnect(
             @Value("${spotify.api.clientId}") String clientId,
@@ -61,21 +65,21 @@ public class SpotifyConnect {
             try {
                 runtime.exec("rundll32 url.dll,FileProtocolHandler " + uri);
             } catch (IOException e) {
-                System.out.println("If you're running on Windows and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE, "If you're running on Windows and read this it looks like we can't open your browser...");
             }
         }
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             try {
                 runtime.exec("open " + uri);
             } catch (IOException e) {
-                System.out.println("If you're running on MacOS and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE, "If you're running on MacOS and read this it looks like we can't open your browser...");
             }
         }
         if (SystemUtils.IS_OS_LINUX) {
             try {
                 runtime.exec(new String[]{"bash", "-c", "xdg-open " + uri});
             } catch (IOException e) {
-                System.out.println("If you're running on Linux and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE, "If you're running on Linux and read this it looks like we can't open your browser...");
             }
         }
     }

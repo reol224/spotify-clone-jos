@@ -1,0 +1,52 @@
+{
+  "groups": [
+    {
+      "name": "spotify.api",
+      "type": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig",
+      "sourceType": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spotify.api.client-id",
+      "type": "java.lang.String",
+      "sourceType": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig"
+    },
+    {
+      "name": "spotify.api.clientId",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.clientId."
+    },
+    {
+      "name": "spotify.api.frontend-url",
+      "type": "java.lang.String",
+      "sourceType": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig"
+    },
+    {
+      "name": "spotify.api.frontendUrl",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.frontendUrl."
+    },
+    {
+      "name": "spotify.api.redirect-uri",
+      "type": "java.lang.String",
+      "sourceType": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig"
+    },
+    {
+      "name": "spotify.api.redirectUri",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.redirectUri."
+    },
+    {
+      "name": "spotify.api.secret-id",
+      "type": "java.lang.String",
+      "sourceType": "src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig"
+    },
+    {
+      "name": "spotify.api.secretId",
+      "type": "java.lang.String",
+      "description": "Description for spotify.api.secretId."
+    }
+  ],
+  "hints": []
+}
