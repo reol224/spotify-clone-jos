@@ -1,24 +1,29 @@
 package src.main.java.com.jos.spotifyclone.controller;
 
-import org.apache.hc.core5.http.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.miscellaneous.AudioAnalysis;
 import se.michaelthelin.spotify.model_objects.specification.AudioFeatures;
 import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
-import java.io.IOException;
+
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
+import java.util.logging.Level;
 
 @RestController
 @RequestMapping("api/audio")
 public class AudioController {
+    String ERROR_MESSAGE = "Error: %s";
+    String CANCELLED_MESSAGE = "Async operation cancelled.";
 
+    Logger logger = LoggerFactory.getLogger(AudioController.class);
     @Autowired
     SpotifyConnect spotifyConnect;
 
@@ -29,14 +34,14 @@ public class AudioController {
      *           The Spotify ID for the track.
      */
     @GetMapping("/analysis")
-    public AudioAnalysis getAudioAnalysisForTrack(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public AudioAnalysis getAudioAnalysisForTrack(@RequestParam String id) {
         AudioAnalysis result = null;
         try {
             result = spotifyConnect.getSpotifyApi().getAudioAnalysisForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error(CANCELLED_MESSAGE);
         }
         return result;
     }
@@ -48,14 +53,14 @@ public class AudioController {
      *           The Spotify ID for the track.
      */
     @GetMapping("/audio-features/track")
-    public AudioFeatures getAudioFeaturesForTrack(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public AudioFeatures getAudioFeaturesForTrack(@RequestParam String id) {
         AudioFeatures result = null;
         try {
             result = spotifyConnect.getSpotifyApi().getAudioFeaturesForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error(CANCELLED_MESSAGE);
         }
         return result;
     }
@@ -68,14 +73,14 @@ public class AudioController {
      *            Maximum: 100 IDs.
      */
     @GetMapping("/audio-features/tracks")
-    public AudioFeatures[] getAudioFeaturesForSeveralTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
+    public AudioFeatures[] getAudioFeaturesForSeveralTracks(@RequestParam String[] ids) {
         AudioFeatures[] result = null;
         try {
             result = spotifyConnect.getSpotifyApi().getAudioFeaturesForSeveralTracks(ids).build().executeAsync().join();
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error(CANCELLED_MESSAGE);
         }
         return result;
     }
