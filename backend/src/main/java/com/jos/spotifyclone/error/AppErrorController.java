@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class AppErrorController implements ErrorController {
-    private final static String PATH = "/error";
-
     @Override
-    @RequestMapping(PATH)
+    @RequestMapping("/error")
     @ResponseBody
     public String getErrorPath() {
-        return "This is a basic error message.Perhaps you have typed the link wrong?";
+        return "This is a basic error message. Perhaps you have typed the link wrong?";
     }
 }

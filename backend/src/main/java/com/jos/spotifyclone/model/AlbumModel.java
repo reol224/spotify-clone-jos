@@ -17,14 +17,6 @@ public class AlbumModel {
         this.image = image;
         this.externalUrl = externalUrl;
     }
-
-    public AlbumModel(String name, List<Object> artist, Image[] image, ExternalUrl externalUrl, List<Object> tracks) {
-        this.name = name;
-        this.artist = artist;
-        this.image = image;
-        this.externalUrl = externalUrl;
-    }
-
     public ExternalUrl getExternalUrl() {
         return externalUrl;
     }

@@ -20,12 +20,11 @@ import java.util.logging.Level;
 @RestController
 @RequestMapping("api/audio")
 public class AudioController {
-    String ERROR_MESSAGE = "Error: %s";
-    String CANCELLED_MESSAGE = "Async operation cancelled.";
-
-    Logger logger = LoggerFactory.getLogger(AudioController.class);
     @Autowired
     SpotifyConnect spotifyConnect;
+    String ERROR_MESSAGE = "Error: %s";
+    String CANCELLED_MESSAGE = "Async operation cancelled.";
+    Logger logger = LoggerFactory.getLogger(AudioController.class);
 
     /**
      * http://localhost:8080/api/audio/analysis?id=01iyCAUm8EvOFqVWYJ3dVX

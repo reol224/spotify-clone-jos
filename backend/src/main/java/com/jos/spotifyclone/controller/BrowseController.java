@@ -2,13 +2,13 @@ package src.main.java.com.jos.spotifyclone.controller;
 
 
 import com.neovisionaries.i18n.CountryCode;
-import org.apache.hc.core5.http.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.special.SearchResult;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import src.main.java.com.jos.spotifyclone.model.AlbumModel;
@@ -17,7 +17,6 @@ import src.main.java.com.jos.spotifyclone.model.EpisodeModel;
 import src.main.java.com.jos.spotifyclone.model.TrackModel;
 import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
@@ -26,14 +25,14 @@ import java.util.stream.Collectors;
 @RequestMapping("api/browse")
 @RestController
 public class BrowseController {
-
     @Autowired
     SpotifyConnect spotifyConnect;
+    Logger logger = LoggerFactory.getLogger(BrowseController.class);
 
     //https://developer.spotify.com/console/get-available-genre-seeds/
     //http://localhost:8080/api/browse/recommended?seed=emo
     @GetMapping("/recommended")
-    public Map<String, Object> getRecommended(@RequestParam(defaultValue = "pop") String seed) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> getRecommended(@RequestParam(defaultValue = "pop") String seed) {
         Map<String, Object> map = new HashMap<>();
         try {
             var response = spotifyConnect.getSpotifyApi().getRecommendations().seed_genres(seed).build().executeAsync().join();
@@ -52,16 +51,16 @@ public class BrowseController {
             }
             map.put("Recommended", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
         return map;
     }
 
     //http://localhost:8080/api/browse/new-releases
     @GetMapping("/new-releases")
-    public Map<String, Object> newReleases() throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> newReleases() {
         Map<String, Object> map = new HashMap<>();
         try {
             var response = spotifyConnect.getSpotifyApi().getListOfNewReleases().build().executeAsync().join();
@@ -81,9 +80,9 @@ public class BrowseController {
             }
             map.put("New releases", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
         return map;
     }
@@ -108,7 +107,6 @@ public class BrowseController {
                 tracks.add(track.getExternalUrls());
             }
 
-
             List<Object> artistList = new ArrayList<>();
             var artists = response.getArtists();
             for (ArtistSimplified artist : artists) {
@@ -120,9 +118,9 @@ public class BrowseController {
             map.put("Album", list);
             map.put("Tracks", tracks);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
 
         return map;
@@ -150,9 +148,9 @@ public class BrowseController {
             }
             map.put("Tracks", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
 
         return map;
@@ -180,16 +178,16 @@ public class BrowseController {
             }
             map.put("Albums", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
         return map;
     }
 
     //http://localhost:8080/api/browse/artist?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artist")
-    public Map<String, Object> getArtist(@RequestParam String artist_id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> getArtist(@RequestParam String artist_id) {
         Map<String, Object> map = new HashMap<>();
         try {
             var response = spotifyConnect.getSpotifyApi().getArtist(artist_id).build().executeAsync().join();
@@ -203,9 +201,9 @@ public class BrowseController {
             list.add(new ArtistModel(externalUrl, followers, genres, images, artistName));
             map.put("Artist", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
         return map;
     }
@@ -232,9 +230,9 @@ public class BrowseController {
             }
             map.put("Artists albums", list);
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
 
         return map;
@@ -242,7 +240,7 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/artists/top?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/top")
-    public Map<String, Object> getArtistsTopTracks(@RequestParam String artist_id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> getArtistsTopTracks(@RequestParam String artist_id) {
         Map<String, Object> map = new HashMap<>();
         try {
             CountryCode countryCode = CountryCode.US;
@@ -277,9 +275,9 @@ public class BrowseController {
                 map.put("Top tracks", list);
             }
         } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
+            logger.error("Error: " + e.getCause().getMessage());
         } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
+            logger.error("Async operation cancelled.");
         }
 
         return map;
@@ -287,8 +285,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/artists/related?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/related")
-    public Map<String, Object> getArtistsRelatedArtists(@RequestParam String artist_id) throws ParseException, SpotifyWebApiException, IOException {
-        Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().execute();
+    public Map<String, Object> getArtistsRelatedArtists(@RequestParam String artist_id) {
+        Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().executeAsync().join();
 
         List<ArtistModel> list = new ArrayList<>();
         for (Artist artist : response) {
@@ -307,8 +305,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/artists?ids=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists")
-    public Map<String, Object> getSeveralArtists(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
-        Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().execute();
+    public Map<String, Object> getSeveralArtists(@RequestParam String[] ids) {
+        Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().executeAsync().join();
 
         List<ArtistModel> list = new ArrayList<>();
         for (Artist artist : response) {
@@ -328,8 +326,8 @@ public class BrowseController {
     //http://localhost:8080/api/browse/categories  run this first to find categories
     //http://localhost:8080/api/browse/category?id=classical
     @GetMapping("/category")
-    public Map<String, Object> getCategory(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
-        Category response = spotifyConnect.getSpotifyApi().getCategory(id).build().execute();
+    public Map<String, Object> getCategory(@RequestParam String id) {
+        Category response = spotifyConnect.getSpotifyApi().getCategory(id).build().executeAsync().join();
         String categoryName = response.getName();
         String href = response.getHref();
         Map<String, Object> map = new HashMap<>();
@@ -341,8 +339,8 @@ public class BrowseController {
     //http://localhost:8080/api/browse/categories  run this first to find categories
     //http://localhost:8080/api/browse/categories/playlist?id=classical
     @GetMapping("/categories/playlist")
-    public Map<String, Object> getCategoryPlaylist(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
-        var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().execute();
+    public Map<String, Object> getCategoryPlaylist(@RequestParam String id) {
+        var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().executeAsync().join();
 
         List<Object> list = new ArrayList<>();
         for (PlaylistSimplified playlist : response.getItems()) {
@@ -358,8 +356,8 @@ public class BrowseController {
     }
 
     @GetMapping("/categories")
-    public Map<String, Object> getListOfCategories() throws ParseException, SpotifyWebApiException, IOException {
-        var response = spotifyConnect.getSpotifyApi().getListOfCategories().build().execute();
+    public Map<String, Object> getListOfCategories() {
+        var response = spotifyConnect.getSpotifyApi().getListOfCategories().build().executeAsync().join();
 
         List<String> list = new ArrayList<>();
         for (Category category : response.getItems()) {
@@ -376,8 +374,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/episode?id=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episode")
-    public Map<String, Object> getEpisode(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
-        Episode response = spotifyConnect.getSpotifyApi().getEpisode(id).build().execute();
+    public Map<String, Object> getEpisode(@RequestParam String id) {
+        Episode response = spotifyConnect.getSpotifyApi().getEpisode(id).build().executeAsync().join();
 
         String name = response.getName();
         String[] language = response.getLanguages();
@@ -396,8 +394,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/episodes?ids=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episodes")
-    public Map<String, Object> getSeveralEpisodes(@RequestParam String ids) throws ParseException, SpotifyWebApiException, IOException {
-        Episode response = spotifyConnect.getSpotifyApi().getEpisode(ids).build().execute();
+    public Map<String, Object> getSeveralEpisodes(@RequestParam String ids) {
+        Episode response = spotifyConnect.getSpotifyApi().getEpisode(ids).build().executeAsync().join();
 
         String name = response.getName();
         String[] language = response.getLanguages();
@@ -416,8 +414,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/show?id=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/show")
-    public Map<String, Object> getShow(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
-        Show response = spotifyConnect.getSpotifyApi().getShow(id).build().execute();
+    public Map<String, Object> getShow(@RequestParam String id) {
+        Show response = spotifyConnect.getSpotifyApi().getShow(id).build().executeAsync().join();
         String description = response.getDescription();
         String name = response.getName();
         ExternalUrl externalUrls = response.getExternalUrls();
@@ -431,8 +429,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/shows?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows")
-    public Map<String, Object> getSeveralShows(@RequestParam String ids) throws ParseException, SpotifyWebApiException, IOException {
-        Show response = spotifyConnect.getSpotifyApi().getShow(ids).build().execute();
+    public Map<String, Object> getSeveralShows(@RequestParam String ids) {
+        Show response = spotifyConnect.getSpotifyApi().getShow(ids).build().executeAsync().join();
         String description = response.getDescription();
         String name = response.getName();
         ExternalUrl externalUrls = response.getExternalUrls();
@@ -446,8 +444,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/shows/episodes?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows/episodes")
-    public Map<String, Object> getShowsEpisodes(@RequestParam String ids) throws ParseException, SpotifyWebApiException, IOException {
-        var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().execute();
+    public Map<String, Object> getShowsEpisodes(@RequestParam String ids) {
+        var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().executeAsync().join();
 
         List<EpisodeModel> list = new ArrayList<>();
         for (EpisodeSimplified episode : response.getItems()) {
@@ -466,8 +464,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/track?id=01iyCAUm8EvOFqVWYJ3dVX
     @GetMapping("/track")
-    public Map<String, Object> getTrack(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
-        Track response = spotifyConnect.getSpotifyApi().getTrack(id).build().execute();
+    public Map<String, Object> getTrack(@RequestParam String id) {
+        Track response = spotifyConnect.getSpotifyApi().getTrack(id).build().executeAsync().join();
 
         List<TrackModel> list = new ArrayList<>();
         String name = response.getName();
@@ -502,8 +500,8 @@ public class BrowseController {
 
     //http://localhost:8080/api/browse/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
     @GetMapping("/tracks")
-    public Map<String, Object> getSeveralTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
-        Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().execute();
+    public Map<String, Object> getSeveralTracks(@RequestParam String[] ids) {
+        Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().executeAsync().join();
 
         List<TrackModel> list = new ArrayList<>();
         for (Track track : response) {
@@ -537,14 +535,14 @@ public class BrowseController {
     }
 
     @GetMapping("/genre-seeds")
-    public String[] getGenreSeeds() throws ParseException, SpotifyWebApiException, IOException {
-        return spotifyConnect.getSpotifyApi().getAvailableGenreSeeds().build().execute();
+    public String[] getGenreSeeds() {
+        return spotifyConnect.getSpotifyApi().getAvailableGenreSeeds().build().executeAsync().join();
     }
 
     //http://localhost:8080/api/browse/search?name=abba&type=artist
     @GetMapping("/search")
-    public Map<String, Object> searchItems(@RequestParam String name) throws ParseException, SpotifyWebApiException, IOException {
-        SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build().execute();
+    public Map<String, Object> searchItems(@RequestParam String name) {
+        SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build().executeAsync().join();
         AlbumSimplified[] albums = searchResult.getAlbums().getItems();
 
         //using streams

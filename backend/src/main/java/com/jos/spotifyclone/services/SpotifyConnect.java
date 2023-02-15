@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 public class SpotifyConnect {
     private final SpotifyApi spotifyApi;
     private final AuthorizationCodeUriRequest.Builder authorizationCodeUriRequestBuilder;
-
     public static final Logger logger = Logger.getLogger(SpotifyConnect.class.getName());
 
     public SpotifyConnect(
