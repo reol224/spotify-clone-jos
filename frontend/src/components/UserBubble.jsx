@@ -6,7 +6,7 @@ const UserBubble = () => {
   const [isLoading, setLoading] = useState(true);
 
   async function fetchData() {
-    const res = await fetch("example");
+    const res = await fetch("api/users/me");
     res
       .json()
       .then((json) => {
