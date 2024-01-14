@@ -16,7 +16,7 @@ import src.main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 @EnableConfigurationProperties(ApplicationPropertiesConfig.class)
 public class SpotifyCloneApplication {
 
-    @Value("spotify.frontend.url")
+    @Value("spotify.api.frontendUrl")
     String FRONTEND_URL;
 
     public static void main(String[] args) {
