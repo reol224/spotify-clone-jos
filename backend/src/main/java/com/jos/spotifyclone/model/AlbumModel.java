@@ -1,9 +1,8 @@
-package src.main.java.com.jos.spotifyclone.model;
-
-import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
-import se.michaelthelin.spotify.model_objects.specification.Image;
+package main.java.com.jos.spotifyclone.model;
 
 import java.util.List;
+import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 public class AlbumModel {
     String name;

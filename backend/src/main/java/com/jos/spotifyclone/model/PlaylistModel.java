@@ -1,4 +1,4 @@
-package src.main.java.com.jos.spotifyclone.model;
+package main.java.com.jos.spotifyclone.model;
 
 
 import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInformation;

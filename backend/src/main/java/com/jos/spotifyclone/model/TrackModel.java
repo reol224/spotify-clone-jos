@@ -1,9 +1,8 @@
-package src.main.java.com.jos.spotifyclone.model;
+package main.java.com.jos.spotifyclone.model;
 
-
-import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
 
 import java.util.List;
+import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
 
 public class TrackModel {
     String name;

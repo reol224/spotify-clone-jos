@@ -1,7 +1,12 @@
-package src.main.java.com.jos.spotifyclone.controller;
+package main.java.com.jos.spotifyclone.controller;
 
 import com.google.gson.JsonArray;
 import com.neovisionaries.i18n.CountryCode;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +18,8 @@ import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInform
 import se.michaelthelin.spotify.model_objects.special.FeaturedPlaylists;
 import se.michaelthelin.spotify.model_objects.special.SnapshotResult;
 import se.michaelthelin.spotify.model_objects.specification.*;
-import src.main.java.com.jos.spotifyclone.model.PlaylistModel;
-import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import main.java.com.jos.spotifyclone.model.PlaylistModel;
+import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RestController
 @RequestMapping("api/playlists")

@@ -1,7 +1,11 @@
-package src.main.java.com.jos.spotifyclone.controller;
+package main.java.com.jos.spotifyclone.controller;
 
 
 import com.neovisionaries.i18n.CountryCode;
+import java.util.*;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.michaelthelin.spotify.model_objects.special.SearchResult;
 import se.michaelthelin.spotify.model_objects.specification.*;
-import src.main.java.com.jos.spotifyclone.model.AlbumModel;
-import src.main.java.com.jos.spotifyclone.model.ArtistModel;
-import src.main.java.com.jos.spotifyclone.model.EpisodeModel;
-import src.main.java.com.jos.spotifyclone.model.TrackModel;
-import src.main.java.com.jos.spotifyclone.services.SpotifyConnect;
-
-import java.util.*;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletionException;
-import java.util.stream.Collectors;
+import main.java.com.jos.spotifyclone.model.AlbumModel;
+import main.java.com.jos.spotifyclone.model.ArtistModel;
+import main.java.com.jos.spotifyclone.model.EpisodeModel;
+import main.java.com.jos.spotifyclone.model.TrackModel;
+import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RequestMapping("api/browse")
 @RestController

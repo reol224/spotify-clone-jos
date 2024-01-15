@@ -1,4 +1,4 @@
-package src.main.java.com.jos.spotifyclone.error;
+package main.java.com.jos.spotifyclone.error;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
