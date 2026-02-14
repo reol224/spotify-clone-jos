@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import { User } from 'lucide-react';
 import "./UserBubble.css";
 
 const UserBubble = () => {
@@ -27,23 +28,28 @@ const UserBubble = () => {
   const profileImage = user?.images?.[0]?.url;
 
   return (
-    <div>
+    <div className="user-bubble-container">
       {isLoading ? (
-        <p>Getting user...</p>
+        <div className="user-bubble loading">
+          <div className="loading-spinner"></div>
+        </div>
       ) : error || !user ? (
         <div className="user-bubble">
-          <p>
-            <span className="user-name">Not connected</span>
-          </p>
+          <div className="user-avatar placeholder">
+            <User size={20} />
+          </div>
+          <span className="user-name">Not connected</span>
         </div>
       ) : (
         <div className="user-bubble">
-          <p>
-            {profileImage && (
-              <img className="profile-icon" src={profileImage} width="30" alt="profile" />
-            )}
-            <span className="user-name">{user.displayName}</span>
-          </p>
+          {profileImage ? (
+            <img className="user-avatar" src={profileImage} alt="profile" />
+          ) : (
+            <div className="user-avatar placeholder">
+              <User size={20} />
+            </div>
+          )}
+          <span className="user-name">{user.displayName}</span>
         </div>
       )}
     </div>
