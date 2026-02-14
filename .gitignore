@@ -26,3 +26,5 @@ hs_err_pid*
 .idea
 .vscode
 backend/mvnw.cmd
+**/tempobook/**
+node_modules
