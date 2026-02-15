@@ -199,11 +199,25 @@
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   padding: 8px;
-  transition: color 0.2s;
+  transition: color 0.2s, transform 0.2s;
 }
 
 .icon-btn:hover {
   color: #a855f7;
+}
+
+.icon-btn.active {
+  color: #ec4899;
+  transform: scale(1.15);
+}
+
+.icon-btn.active:hover {
+  color: #ec4899;
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .player-controls {
@@ -235,6 +249,26 @@
   transform: scale(1.1);
 }
 
+.control-btn.active {
+  color: #a855f7;
+  position: relative;
+}
+
+.control-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.repeat-one-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  font-weight: bold;
+  color: #a855f7;
+}
+
 .play-btn {
   width: 40px;
   height: 40px;
@@ -248,6 +282,12 @@
   justify-content: center;
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.play-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .play-btn:hover {
@@ -271,19 +311,25 @@
 
 .progress {
   flex-grow: 1;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
   position: relative;
   cursor: pointer;
+  transition: height 0.2s;
+}
+
+.progress:hover {
+  height: 8px;
 }
 
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
-  border-radius: 2px;
+  border-radius: 3px;
   position: relative;
   transition: width 0.1s;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
 }
 
 .progress:hover .progress-fill::after {
@@ -293,15 +339,16 @@
 .progress-fill::after {
   content: '';
   position: absolute;
-  right: -6px;
+  right: -8px;
   top: 50%;
   transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   background: white;
   border-radius: 50%;
-  opacity: 0;
+  opacity: 0.7;
   transition: opacity 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .volume-control {

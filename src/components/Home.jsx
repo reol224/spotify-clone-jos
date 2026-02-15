@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Play, Music2, Sparkles } from 'lucide-react';
+import { Play, Music2, Sparkles, Heart } from 'lucide-react';
 import './Home.css';
-import { getLibrary, subscribe } from '../utils/musicStore';
+import { getLibrary, subscribe, getFavoriteSongs } from '../utils/musicStore';
+import * as playerStore from '../utils/playerStore';
 
 const Home = () => {
   const [library, setLibrary] = useState(getLibrary());
@@ -40,6 +41,17 @@ const Home = () => {
 
   const albums = getAlbums();
   const recentlyPlayed = library.songs.slice(-4).reverse(); // Last 4 songs added
+  const favoriteSongs = getFavoriteSongs();
+
+  const handlePlaySong = async (song) => {
+    await playerStore.playSong(song, library.songs);
+  };
+
+  const handlePlayAlbum = async (album) => {
+    if (album.songs.length > 0) {
+      await playerStore.playSong(album.songs[0], album.songs);
+    }
+  };
 
   return (
     <div className="home-container">
@@ -55,7 +67,7 @@ const Home = () => {
               <div className="quick-pick-info">
                 <div className="quick-pick-title">{song.title}</div>
               </div>
-              <button className="quick-pick-play">
+              <button className="quick-pick-play" onClick={() => handlePlaySong(song)}>
                 <Play size={20} fill="currentColor" />
               </button>
             </div>
@@ -80,7 +92,7 @@ const Home = () => {
               <div key={index} className="music-card">
                 <div className="card-image-wrapper">
                   <img src={album.img} alt={album.title} className="card-image" />
-                  <button className="card-play-btn">
+                  <button className="card-play-btn" onClick={() => handlePlayAlbum(album)}>
                     <Play size={24} fill="currentColor" />
                   </button>
                 </div>
@@ -98,6 +110,32 @@ const Home = () => {
         )}
       </section>
 
+      {favoriteSongs.length > 0 && (
+        <section className="section">
+          <div className="section-header">
+            <h2 className="section-title">
+              <Heart size={24} className="favorites-icon" fill="currentColor" />
+              Favourites
+            </h2>
+            {favoriteSongs.length > 6 && <button type="button" className="section-link">Show all</button>}
+          </div>
+          <div className="cards-grid">
+            {favoriteSongs.slice(0, 6).map((song, index) => (
+              <div key={song.id || index} className="music-card">
+                <div className="card-image-wrapper">
+                  <img src={song.coverArt || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80'} alt={song.title} className="card-image" />
+                  <button className="card-play-btn" onClick={() => handlePlaySong(song)}>
+                    <Play size={24} fill="currentColor" />
+                  </button>
+                </div>
+                <h3 className="card-title">{song.title}</h3>
+                <p className="card-subtitle">{song.artist || 'Unknown Artist'}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="section">
         <div className="section-header">
           <h2 className="section-title">Recently Added</h2>
@@ -109,7 +147,7 @@ const Home = () => {
               <div key={song.id || index} className="music-card">
                 <div className="card-image-wrapper">
                   <img src={song.coverArt || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80'} alt={song.title} className="card-image" />
-                  <button className="card-play-btn">
+                  <button className="card-play-btn" onClick={() => handlePlaySong(song)}>
                     <Play size={24} fill="currentColor" />
                   </button>
                 </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Play, Plus, Music, Trash2, ListMusic, Clock, MoreHorizontal, X } from 'lucide-react';
 import { getLibrary, subscribe, removeSong, createPlaylist, deletePlaylist, addSongToPlaylist, removeSongFromPlaylist, getSongsForPlaylist } from '../utils/musicStore';
 import { formatDuration } from '../utils/audioParser';
+import * as playerStore from '../utils/playerStore';
 import './Library.css';
 
 const Library = () => {
@@ -34,6 +35,18 @@ const Library = () => {
 
   const playlistSongs = selectedPlaylist ? getSongsForPlaylist(selectedPlaylist.id) : [];
   const playlistCover = playlistSongs.length > 0 && playlistSongs[0].coverArt;
+
+  const handlePlaySong = async (song, songList) => {
+    await playerStore.playSong(song, songList);
+  };
+
+  const handlePlayPlaylist = async (e, playlist) => {
+    e.stopPropagation();
+    const songs = getSongsForPlaylist(playlist.id);
+    if (songs.length > 0) {
+      await playerStore.playSong(songs[0], songs);
+    }
+  };
 
   return (
     <div className="library-container">
@@ -76,7 +89,11 @@ const Library = () => {
                   </div>
                   <div className="songs-list">
                     {library.songs.map((song, index) => (
-                      <div key={song.id} className="song-row">
+                      <div 
+                        key={song.id} 
+                        className="song-row"
+                        onClick={() => handlePlaySong(song, library.songs)}
+                      >
                         <span className="col-num song-num">{index + 1}</span>
                         <div className="col-title song-title-col">
                           <div className="song-cover-small">
@@ -193,7 +210,7 @@ const Library = () => {
                             <ListMusic size={32} />
                           </div>
                         )}
-                        <button className="card-play-btn">
+                        <button className="card-play-btn" onClick={(e) => handlePlayPlaylist(e, playlist)}>
                           <Play size={24} fill="currentColor" />
                         </button>
                       </div>
@@ -249,7 +266,11 @@ const Library = () => {
           ) : (
             <div className="songs-list">
               {playlistSongs.map((song, index) => (
-                <div key={song.id} className="song-row">
+                <div 
+                  key={song.id} 
+                  className="song-row"
+                  onClick={() => handlePlaySong(song, playlistSongs)}
+                >
                   <span className="col-num song-num">{index + 1}</span>
                   <div className="col-title song-title-col">
                     <div className="song-cover-small">

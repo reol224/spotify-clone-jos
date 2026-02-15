@@ -3,13 +3,16 @@ import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library}
 import Login from "./components/Login";
 import Settings from "./components/Settings";
 import {Route, Switch, useLocation} from "react-router-dom";
-import { Play, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import * as playerStore from './utils/playerStore';
+import { toggleFavorite } from './utils/musicStore';
 
 function App() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [playerState, setPlayerState] = useState(playerStore.getPlayerState());
 
   useEffect(() => {
     const user = localStorage.getItem('soggify_current_user');
@@ -17,6 +20,18 @@ function App() {
       setCurrentUser(JSON.parse(user));
       setIsAuthenticated(true);
     }
+  }, []);
+
+  useEffect(() => {
+    // Subscribe to player state changes
+    const unsubscribe = playerStore.subscribe((state) => {
+      setPlayerState(state);
+    });
+    
+    // Initialize player
+    playerStore.initializePlayer();
+    
+    return unsubscribe;
   }, []);
 
   const handleLogin = (user) => {
@@ -44,6 +59,34 @@ function App() {
       default: return 'Home';
     }
   };
+
+  const formatTime = (seconds) => {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleProgressClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const newTime = percent * playerState.duration;
+    playerStore.seek(newTime);
+  };
+
+  const handleVolumeClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    playerStore.setVolume(percent);
+  };
+
+  const handleToggleFavorite = () => {
+    if (playerState.currentSong) {
+      toggleFavorite(playerState.currentSong.id);
+    }
+  };
+
+  const { currentSong, isPlaying, currentTime, duration, volume, isShuffle, repeatMode } = playerState;
 
   return (
     <div className="App">
@@ -96,40 +139,83 @@ function App() {
       <div className="now-playing-bar">
         <div className="now-playing-track">
           <div className="track-image">
-            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&q=80" alt="Album" />
+            <img 
+              src={currentSong?.coverArt || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&q=80"} 
+              alt={currentSong?.title || "No song playing"} 
+            />
           </div>
           <div className="track-info">
-            <div className="track-name">Electric Dreams</div>
-            <div className="track-artist">The Synthwave</div>
+            <div className="track-name">{currentSong?.title || 'No song playing'}</div>
+            <div className="track-artist">{currentSong?.artist || 'Select a song to play'}</div>
           </div>
-          <button className="icon-btn">
-            <Heart size={16} />
+          <button 
+            className={`icon-btn ${currentSong?.isFavorite ? 'active' : ''}`}
+            onClick={handleToggleFavorite}
+            disabled={!currentSong}
+          >
+            <Heart size={16} fill={currentSong?.isFavorite ? 'currentColor' : 'none'} />
           </button>
         </div>
         
         <div className="player-controls">
           <div className="control-buttons">
-            <button className="control-btn"><Shuffle size={16} /></button>
-            <button className="control-btn"><SkipBack size={20} /></button>
-            <button className="play-btn">
-              <Play size={20} fill="currentColor" />
+            <button 
+              className={`control-btn ${isShuffle ? 'active' : ''}`}
+              onClick={() => playerStore.toggleShuffle()}
+              title={isShuffle ? 'Shuffle on' : 'Shuffle off'}
+            >
+              <Shuffle size={16} />
             </button>
-            <button className="control-btn"><SkipForward size={20} /></button>
-            <button className="control-btn"><Repeat size={16} /></button>
+            <button 
+              className="control-btn"
+              onClick={async () => await playerStore.previousSong()}
+              disabled={!currentSong}
+            >
+              <SkipBack size={20} />
+            </button>
+            <button 
+              className="play-btn"
+              onClick={() => playerStore.togglePlayPause()}
+              disabled={!currentSong}
+            >
+              {isPlaying ? (
+                <Pause size={20} fill="currentColor" />
+              ) : (
+                <Play size={20} fill="currentColor" />
+              )}
+            </button>
+            <button 
+              className="control-btn"
+              onClick={async () => await playerStore.nextSong()}
+              disabled={!currentSong}
+            >
+              <SkipForward size={20} />
+            </button>
+            <button 
+              className={`control-btn ${repeatMode !== 'off' ? 'active' : ''}`}
+              onClick={() => playerStore.toggleRepeat()}
+              title={repeatMode === 'off' ? 'Repeat off' : repeatMode === 'all' ? 'Repeat all' : 'Repeat one'}
+            >
+              <Repeat size={16} />
+              {repeatMode === 'one' && <span className="repeat-one-indicator">1</span>}
+            </button>
           </div>
           <div className="progress-bar">
-            <span className="time">1:24</span>
-            <div className="progress">
-              <div className="progress-fill" style={{width: '35%'}}></div>
+            <span className="time">{formatTime(currentTime)}</span>
+            <div className="progress" onClick={handleProgressClick}>
+              <div 
+                className="progress-fill" 
+                style={{width: `${duration ? (currentTime / duration) * 100 : 0}%`}}
+              ></div>
             </div>
-            <span className="time">3:45</span>
+            <span className="time">{formatTime(duration)}</span>
           </div>
         </div>
         
         <div className="volume-control">
           <Volume2 size={18} />
-          <div className="volume-bar">
-            <div className="volume-fill" style={{width: '70%'}}></div>
+          <div className="volume-bar" onClick={handleVolumeClick}>
+            <div className="volume-fill" style={{width: `${volume * 100}%`}}></div>
           </div>
         </div>
       </div>
