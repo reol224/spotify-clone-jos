@@ -4,65 +4,20 @@ import {
   Zap, Eye, EyeOff, Save, Sparkles, Radio as RadioIcon,
   Headphones, Sliders
 } from 'lucide-react';
+import { getDefaultSettings, loadSettings } from '../utils/settingsDefaults';
 import './Settings.css';
 
 const Settings = ({ currentUser }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [saveStatus, setSaveStatus] = useState(null);
-  
-  const getDefaultSettings = () => ({
-    // Profile
-    displayName: currentUser?.displayName || 'User',
-    email: currentUser?.username || 'user@soggify.com',
-    bio: 'Music lover 🎵',
-    
-    // Appearance
-    theme: 'dark',
-    accentColor: 'purple',
-    albumArtBlur: true,
-    animations: true,
-    particleEffects: true,
-    
-    // Audio
-    audioQuality: 'high',
-    normalization: true,
-    crossfade: 3,
-    replayGain: false,
-    bassBoost: false,
-    
-    // Notifications
-    notifications: true,
-    nowPlayingNotifs: false,
-    playlistUpdates: true,
-    newReleases: true,
-    
-    // Privacy
-    publicProfile: true,
-    showRecentlyPlayed: true,
-    shareListeningActivity: false,
-    
-    // Playback
-    autoplay: true,
-    gaplessPlayback: true,
-    showSongLyrics: true,
-    videoAutoplay: false,
-  });
 
-  const [settings, setSettings] = useState(getDefaultSettings());
+  const [settings, setSettings] = useState(() => loadSettings(currentUser));
   const [showPassword, setShowPassword] = useState(false);
 
-  // Load settings from localStorage on mount
+  // Reload settings when currentUser changes so defaults use real user info
   useEffect(() => {
-    const savedSettings = localStorage.getItem('soggify_settings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        setSettings({ ...getDefaultSettings(), ...parsed });
-      } catch (error) {
-        console.error('Failed to load settings:', error);
-      }
-    }
-  }, []);
+    setSettings(loadSettings(currentUser));
+  }, [currentUser]);
 
   const handleSave = () => {
     try {

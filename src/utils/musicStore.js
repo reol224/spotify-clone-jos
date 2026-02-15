@@ -21,15 +21,26 @@ function loadFromStorage() {
           }
           const blob = new Blob([bytes], { type: song.audioMimeType || 'audio/mpeg' });
           const audioUrl = URL.createObjectURL(blob);
-          // Migrate to IndexedDB in background
-          saveAudioBlob(song.id, blob, song.audioMimeType || 'audio/mpeg').then(() => {
-            console.log('Migrated audio to IndexedDB:', song.title);
-          });
-          return {
+          // Keep audioBase64 for now; clear it only after IndexedDB save succeeds
+          const migratedSong = {
             ...song,
             audioUrl,
-            audioBase64: undefined, // Clear legacy base64
           };
+          saveAudioBlob(song.id, blob, song.audioMimeType || 'audio/mpeg').then(() => {
+            console.log('Migrated audio to IndexedDB:', song.title);
+            // Now safe to clear the base64 from the in-memory song
+            migratedSong.audioBase64 = undefined;
+            // Also update the library and persist so base64 is removed from localStorage
+            const idx = library.songs.findIndex(s => s.id === song.id);
+            if (idx !== -1) {
+              library.songs[idx] = { ...library.songs[idx], audioBase64: undefined };
+              saveToStorage(library);
+            }
+          }).catch(err => {
+            console.error('Failed to migrate audio to IndexedDB, keeping base64:', err);
+            // Leave audioBase64 intact so data is not lost
+          });
+          return migratedSong;
         }
         return song;
       });

@@ -19,7 +19,13 @@ function openDB() {
     };
     
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onerror = () => {
+      dbPromise = null; // Clear cache so future calls can retry
+      reject(request.error);
+    };
+  }).catch((err) => {
+    dbPromise = null; // Also clear on any unexpected rejection
+    throw err;
   });
   
   return dbPromise;

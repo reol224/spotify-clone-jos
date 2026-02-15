@@ -16,6 +16,7 @@ let playerState = {
 
 let listeners = [];
 let audioElement = null;
+let currentBlobUrl = null; // Track blob URL for cleanup
 
 export function initializePlayer() {
   if (!audioElement) {
@@ -72,15 +73,19 @@ export function getPlayerState() {
 export async function setQueue(songs, startIndex = 0) {
   const audio = initializePlayer();
   
+  // Shallow-copy to prevent external mutations from corrupting internal state
+  const queueCopy = [...songs];
+  const originalQueueCopy = [...songs];
+  
   updateState({
-    queue: songs,
-    originalQueue: songs,
+    queue: queueCopy,
+    originalQueue: originalQueueCopy,
     currentIndex: startIndex,
-    currentSong: songs[startIndex] || null,
+    currentSong: queueCopy[startIndex] || null,
   });
 
-  if (songs[startIndex]) {
-    await loadSong(songs[startIndex]);
+  if (queueCopy[startIndex]) {
+    await loadSong(queueCopy[startIndex]);
   }
 }
 
@@ -113,10 +118,22 @@ async function loadSong(song) {
   
   audio.pause();
   audio.currentTime = 0;
+
+  // Helper: revoke previous blob URL and set new src
+  const setAudioSrc = (url, isBlobUrl = false) => {
+    if (currentBlobUrl) {
+      URL.revokeObjectURL(currentBlobUrl);
+      currentBlobUrl = null;
+    }
+    audio.src = url;
+    if (isBlobUrl) {
+      currentBlobUrl = url;
+    }
+  };
   
   // Use the audioUrl directly (created from the original file or restored from IndexedDB)
   if (song.audioUrl) {
-    audio.src = song.audioUrl;
+    setAudioSrc(song.audioUrl, false); // audioUrl may already be managed elsewhere
     console.log('Loading song from audioUrl:', song.fileName || song.title);
     audio.load();
   } else if (song.audioBase64) {
@@ -128,15 +145,13 @@ async function loadSong(song) {
     }
     const blob = new Blob([bytes], { type: song.audioMimeType || 'audio/mpeg' });
     const url = URL.createObjectURL(blob);
-    audio.src = url;
-    // Also update the song's audioUrl for future use
-    song.audioUrl = url;
+    setAudioSrc(url, true);
     console.log('Loading song from base64 data:', song.fileName || song.title);
     audio.load();
   } else if (song.file) {
     // Fallback: create URL from file if audioUrl is missing
     const url = URL.createObjectURL(song.file);
-    audio.src = url;
+    setAudioSrc(url, true);
     console.log('Loading song from file object:', song.fileName);
     audio.load();
   } else {
@@ -145,8 +160,7 @@ async function loadSong(song) {
     const record = await getAudioBlob(song.id);
     if (record && record.blob) {
       const url = URL.createObjectURL(record.blob);
-      audio.src = url;
-      song.audioUrl = url; // Cache for future use
+      setAudioSrc(url, true);
       console.log('Loading song from IndexedDB:', song.title);
       audio.load();
     } else {
@@ -333,6 +347,12 @@ export function clearQueue() {
 
 export function removeFromQueue(index) {
   const { queue, originalQueue, currentIndex } = playerState;
+
+  // Guard: validate index
+  if (!Number.isSafeInteger(index) || index < 0 || index >= queue.length) {
+    return; // no-op for invalid index
+  }
+
   const newQueue = queue.filter((_, i) => i !== index);
   const removedSong = queue[index];
   const newOriginalQueue = originalQueue.filter(s => s.id !== removedSong.id);
@@ -352,4 +372,12 @@ export function removeFromQueue(index) {
     currentIndex: newCurrentIndex,
     currentSong: newCurrentIndex >= 0 ? newQueue[newCurrentIndex] : null,
   });
+}
+
+export function updateCurrentSongFavorite(isFavorite) {
+  if (playerState.currentSong) {
+    updateState({
+      currentSong: { ...playerState.currentSong, isFavorite },
+    });
+  }
 }

@@ -5,12 +5,32 @@ import "./UserBubble.css";
 
 const UserBubble = ({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    // Try to sync with saved settings
+    try {
+      const saved = localStorage.getItem('soggify_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.theme || 'dark';
+      }
+    } catch (e) { /* ignore */ }
+    return 'dark';
+  });
   const [notifications, setNotifications] = useState(true);
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-    document.body.className = theme === 'dark' ? 'light-mode' : 'dark-mode';
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    // Use classList to only toggle the theme class without overwriting other classes
+    document.body.classList.remove('dark-mode', 'light-mode');
+    document.body.classList.add(newTheme === 'dark' ? 'dark-mode' : 'light-mode');
+    // Persist theme choice in settings
+    try {
+      const saved = localStorage.getItem('soggify_settings');
+      const settings = saved ? JSON.parse(saved) : {};
+      settings.theme = newTheme;
+      localStorage.setItem('soggify_settings', JSON.stringify(settings));
+    } catch (e) { /* ignore */ }
   };
 
   const toggleNotifications = () => {

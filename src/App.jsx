@@ -6,7 +6,7 @@ import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import * as playerStore from './utils/playerStore';
-import { toggleFavorite } from './utils/musicStore';
+import { toggleFavorite, getLibrary } from './utils/musicStore';
 import PlaylistView from "./components/PlaylistView";
 
 function App() {
@@ -20,8 +20,14 @@ function App() {
   useEffect(() => {
     const user = localStorage.getItem('soggify_current_user');
     if (user) {
-      setCurrentUser(JSON.parse(user));
-      setIsAuthenticated(true);
+      try {
+        const parsed = JSON.parse(user);
+        setCurrentUser(parsed);
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.error('Corrupted soggify_current_user in localStorage, removing:', e);
+        localStorage.removeItem('soggify_current_user');
+      }
     }
   }, []);
 
@@ -94,6 +100,11 @@ function App() {
   const handleToggleFavorite = () => {
     if (playerState.currentSong) {
       toggleFavorite(playerState.currentSong.id);
+      // Propagate the change to playerState so the UI reflects immediately
+      const updatedSong = getLibrary().songs.find(s => s.id === playerState.currentSong.id);
+      if (updatedSong) {
+        playerStore.updateCurrentSongFavorite(updatedSong.isFavorite);
+      }
     }
   };
 

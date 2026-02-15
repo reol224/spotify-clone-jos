@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import './Login.css';
 
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const Login = ({ onLogin }) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
@@ -10,7 +18,7 @@ const Login = ({ onLogin }) => {
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -38,23 +46,34 @@ const Login = ({ onLogin }) => {
         return;
       }
 
-      // Create new user
+      // Hash the password
+      const passwordHash = await hashPassword(formData.password);
+
+      // Create new user for persistence (with hash, no plaintext)
       const newUser = {
         username: formData.username,
-        password: formData.password,
+        passwordHash,
         displayName: formData.username,
         createdAt: new Date().toISOString()
       };
 
       users.push(newUser);
       localStorage.setItem('soggify_users', JSON.stringify(users));
-      localStorage.setItem('soggify_current_user', JSON.stringify(newUser));
-      onLogin(newUser);
+
+      // Safe user object (no password-related fields) for session & callbacks
+      const safeUser = {
+        username: newUser.username,
+        displayName: newUser.displayName,
+        createdAt: newUser.createdAt,
+      };
+      localStorage.setItem('soggify_current_user', JSON.stringify(safeUser));
+      onLogin(safeUser);
     } else {
       // Login logic
       const users = JSON.parse(localStorage.getItem('soggify_users') || '[]');
-      const user = users.find(u => 
-        u.username === formData.username && u.password === formData.password
+      const passwordHash = await hashPassword(formData.password);
+      const user = users.find(u =>
+        u.username === formData.username && (u.passwordHash === passwordHash || u.password === formData.password)
       );
 
       if (!user) {
@@ -62,8 +81,21 @@ const Login = ({ onLogin }) => {
         return;
       }
 
-      localStorage.setItem('soggify_current_user', JSON.stringify(user));
-      onLogin(user);
+      // If user still has plaintext password, migrate to hash
+      if (user.password && !user.passwordHash) {
+        user.passwordHash = passwordHash;
+        delete user.password;
+        localStorage.setItem('soggify_users', JSON.stringify(users));
+      }
+
+      // Strip password fields before storing session
+      const safeUser = {
+        username: user.username,
+        displayName: user.displayName,
+        createdAt: user.createdAt,
+      };
+      localStorage.setItem('soggify_current_user', JSON.stringify(safeUser));
+      onLogin(safeUser);
     }
   };
 
