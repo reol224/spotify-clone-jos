@@ -127,7 +127,8 @@ const Library = () => {
                             <div className="song-context-menu">
                               <button
                                 className="context-menu-item"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setShowAddToPlaylist(song.id);
                                   setContextMenu(null);
                                 }}
