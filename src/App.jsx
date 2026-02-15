@@ -2,7 +2,7 @@ import "./App.css";
 import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library} from "./components";
 import Login from "./components/Login";
 import Settings from "./components/Settings";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import * as playerStore from './utils/playerStore';
@@ -11,6 +11,7 @@ import PlaylistView from "./components/PlaylistView";
 
 function App() {
   const location = useLocation();
+  const history = useHistory();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [playerState, setPlayerState] = useState(playerStore.getPlayerState());
@@ -53,7 +54,7 @@ function App() {
   
   const handleSelectPlaylist = (playlist) => {
     setSelectedPlaylist(playlist);
-    window.location.href = `/library?playlist=${playlist.id}`;
+    history.push(`/playlist/${playlist.id}`);
   };
   
   const getPageTitle = () => {

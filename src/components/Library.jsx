@@ -26,16 +26,14 @@ const Library = () => {
     const params = new URLSearchParams(location.search);
     const playlistId = params.get('playlist');
     
-    if (playlistId) {
+    if (playlistId && view !== 'playlist-detail') {
       const playlist = library.playlists.find(p => p.id === playlistId);
       if (playlist) {
         setSelectedPlaylist(playlist);
         setView('playlist-detail');
-        // Clean up the URL
-        window.history.replaceState({}, document.title, '/library');
       }
     }
-  }, [location.search, library.playlists]);
+  }, [location.search]);
 
   const handleCreatePlaylist = (e) => {
     e.preventDefault();
