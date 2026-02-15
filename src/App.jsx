@@ -1,10 +1,37 @@
 import "./App.css";
 import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library} from "./components";
+import Login from "./components/Login";
 import {Route, Switch, useLocation} from "react-router-dom";
-import { Play, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat } from 'lucide-react';
+import { Play, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 function App() {
   const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('soggify_current_user');
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('soggify_current_user');
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
   
   const getPageTitle = () => {
     switch(location.pathname) {
@@ -31,7 +58,7 @@ function App() {
               <circle cx="12" cy="12" r="10" />
               <path d="M8 12l3 3 5-6" stroke="white" strokeWidth="2" fill="none" />
             </svg>
-            <span className="logo-text">Vibestream</span>
+            <span className="logo-text">Soggify</span>
           </div>
         </div>
         <Links />
@@ -45,7 +72,10 @@ function App() {
           </div>
           <h1 className="page-title">{getPageTitle()}</h1>
           <div className="header-right">
-            <UserBubble />
+            <UserBubble user={currentUser} />
+            <button className="logout-btn" onClick={handleLogout} title="Logout">
+              <LogOut size={18} />
+            </button>
           </div>
         </section>
         <section className="body-panel">

@@ -3,6 +3,13 @@ import { Play } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
+  const getTimeBasedGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   const featuredAlbums = [
     { title: "Midnight Vibes", artist: "Luna Wave", img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&q=80" },
     { title: "Electric Soul", artist: "Neon Dreams", img: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80" },
@@ -22,7 +29,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <section className="greeting-section">
-        <h2 className="greeting">Good evening</h2>
+        <h2 className="greeting">{getTimeBasedGreeting()}</h2>
       </section>
 
       <section className="quick-picks">

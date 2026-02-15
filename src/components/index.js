@@ -6,6 +6,7 @@ import Browse from './Browse';
 import Radio from './Radio';
 import ImportMusic from './ImportMusic';
 import Library from './Library';
+import Login from './Login';
 
 export {
     UserBubble,
@@ -15,5 +16,6 @@ export {
     Browse,
     Radio,
     ImportMusic,
-    Library
+    Library,
+    Login
 }
