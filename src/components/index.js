@@ -7,6 +7,7 @@ import Radio from './Radio';
 import ImportMusic from './ImportMusic';
 import Library from './Library';
 import Login from './Login';
+import Settings from './Settings';
 
 export {
     UserBubble,
@@ -17,5 +18,6 @@ export {
     Radio,
     ImportMusic,
     Library,
-    Login
+    Login,
+    Settings
 }

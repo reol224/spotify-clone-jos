@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, Music, X, Loader2, CheckCircle, AlertCircle, FolderOpen } from 'lucide-react';
+import { Upload, Music, X, Loader2, CheckCircle, AlertCircle, FolderOpen, Settings as SettingsIcon, User, Palette, Headphones, Bell, Lock, PlayCircle, Save } from 'lucide-react';
 import { parseAudioFiles } from '../utils/audioParser';
 import { addSongs } from '../utils/musicStore';
 import './ImportMusic.css';
@@ -130,6 +130,42 @@ const ImportMusic = ({ onImportComplete }) => {
     setResults(null);
     setError(null);
     setProgress({ current: 0, total: 0, fileName: '' });
+  };
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile');
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem('soggify_settings');
+    return saved ? JSON.parse(saved) : {
+      displayName: 'Music Lover',
+      email: 'user@example.com',
+      bio: '',
+      accentColor: 'purple',
+      albumBlur: true,
+      animations: true,
+      particles: false,
+      streamQuality: 'high',
+      crossfade: 5,
+      volumeNorm: true,
+      bassBoost: false,
+      replayGain: false,
+      notifications: true,
+      newReleases: true,
+      publicProfile: true,
+      listeningActivity: true,
+      autoplay: true,
+      gapless: true,
+      showLyrics: true
+    };
+  });
+
+  const saveSettings = () => {
+    localStorage.setItem('soggify_settings', JSON.stringify(settings));
+    alert('Settings saved!');
+  };
+
+  const updateSetting = (key, value) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -267,6 +303,7 @@ const ImportMusic = ({ onImportComplete }) => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import "./App.css";
 import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library} from "./components";
 import Login from "./components/Login";
+import Settings from "./components/Settings";
 import {Route, Switch, useLocation} from "react-router-dom";
 import { Play, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -39,6 +40,7 @@ function App() {
       case '/radio': return 'Radio';
       case '/library': return 'Your Library';
       case '/import': return 'Import Music';
+      case '/settings': return 'Settings';
       default: return 'Home';
     }
   };
@@ -72,7 +74,7 @@ function App() {
           </div>
           <h1 className="page-title">{getPageTitle()}</h1>
           <div className="header-right">
-            <UserBubble user={currentUser} />
+            <UserBubble user={currentUser} onLogout={handleLogout} />
             <button className="logout-btn" onClick={handleLogout} title="Logout">
               <LogOut size={18} />
             </button>
@@ -85,6 +87,7 @@ function App() {
             <Route path="/radio" component={Radio} />
             <Route path="/library" component={Library} />
             <Route path="/import" component={ImportMusic} />
+            <Route path="/settings" render={() => <Settings currentUser={currentUser} />} />
           </Switch>
         </section>
       </section>
