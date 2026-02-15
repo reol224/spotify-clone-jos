@@ -4,6 +4,8 @@ import Links from './Links';
 import Home from './Home';
 import Browse from './Browse';
 import Radio from './Radio';
+import ImportMusic from './ImportMusic';
+import Library from './Library';
 
 export {
     UserBubble,
@@ -11,5 +13,7 @@ export {
     Links,
     Home,
     Browse,
-    Radio
+    Radio,
+    ImportMusic,
+    Library
 }

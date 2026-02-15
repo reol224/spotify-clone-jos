@@ -1,0 +1,77 @@
+.browse-container {
+  padding-bottom: 40px;
+}
+
+.browse-title {
+  font-size: 32px;
+  font-family: 'GothamBold', sans-serif;
+  margin: 0 0 24px 0;
+  color: white;
+}
+
+.genres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.genre-card {
+  position: relative;
+  height: 200px;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.genre-card:hover {
+  transform: scale(1.02);
+}
+
+.genre-name {
+  font-size: 24px;
+  font-family: 'GothamBold', sans-serif;
+  color: white;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.genre-image-wrapper {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 120px;
+  height: 120px;
+  transform: rotate(25deg);
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.genre-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .genres-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  
+  .genre-card {
+    height: 150px;
+  }
+  
+  .genre-name {
+    font-size: 20px;
+  }
+  
+  .genre-image-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+}
