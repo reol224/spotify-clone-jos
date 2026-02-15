@@ -22,7 +22,7 @@ const Playlists = () => {
       }));
       setLoading(false);
     } catch (err) {
-      console.log("Failed to fetch playlists:", err);
+      console.error("Failed to fetch playlists:", err);
       setError(true);
       setLoading(false);
     }

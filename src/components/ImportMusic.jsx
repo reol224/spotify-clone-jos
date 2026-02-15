@@ -107,9 +107,15 @@ const ImportMusic = ({ onImportComplete }) => {
         if (entry) entries.push(entry);
       }
 
-      Promise.all(entries.map(processEntry)).then(() => {
-        processFiles(files);
-      });
+      Promise.all(entries.map(processEntry))
+        .then(() => {
+          processFiles(files);
+        })
+        .catch((err) => {
+          console.error('Error processing dropped entries:', err);
+          setError('Failed to process some dropped files. Please try again.');
+          setIsProcessing(false);
+        });
     } else {
       processFiles(Array.from(e.dataTransfer.files));
     }

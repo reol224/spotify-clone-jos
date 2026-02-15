@@ -42,7 +42,7 @@
 
 .logo-text {
   font-size: 24px;
-  font-family: 'GothamBold', sans-serif;
+  font-family: GothamBold, sans-serif;
   background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -98,7 +98,7 @@
 
 .page-title {
   font-size: 28px;
-  font-family: 'GothamBold', sans-serif;
+  font-family: GothamBold, sans-serif;
   margin: 0;
   flex-grow: 1;
 }
@@ -158,7 +158,7 @@
 
 .track-name {
   font-size: 14px;
-  font-family: 'GothamMedium', sans-serif;
+  font-family: GothamMedium, sans-serif;
   color: white;
   white-space: nowrap;
   overflow: hidden;
@@ -245,7 +245,7 @@
 .time {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.6);
-  font-family: 'GothamMedium', sans-serif;
+  font-family: GothamMedium, sans-serif;
   min-width: 40px;
 }
 

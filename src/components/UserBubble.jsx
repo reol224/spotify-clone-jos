@@ -17,7 +17,7 @@ const UserBubble = () => {
       setUser(json);
       setLoading(false);
     } catch (err) {
-      console.log("Failed to fetch user:", err);
+      console.error("Failed to fetch user:", err);
       setError(true);
       setLoading(false);
     }
