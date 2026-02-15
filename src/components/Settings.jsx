@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   User, Lock, Bell, Globe, Palette, Volume2, Music, 
   Zap, Eye, EyeOff, Save, Sparkles, Radio as RadioIcon,
@@ -8,7 +8,9 @@ import './Settings.css';
 
 const Settings = ({ currentUser }) => {
   const [activeTab, setActiveTab] = useState('profile');
-  const [settings, setSettings] = useState({
+  const [saveStatus, setSaveStatus] = useState(null);
+  
+  const getDefaultSettings = () => ({
     // Profile
     displayName: currentUser?.displayName || 'User',
     email: currentUser?.username || 'user@soggify.com',
@@ -46,12 +48,32 @@ const Settings = ({ currentUser }) => {
     videoAutoplay: false,
   });
 
+  const [settings, setSettings] = useState(getDefaultSettings());
   const [showPassword, setShowPassword] = useState(false);
 
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('soggify_settings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        setSettings({ ...getDefaultSettings(), ...parsed });
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+      }
+    }
+  }, []);
+
   const handleSave = () => {
-    // Save settings to localStorage or backend
-    localStorage.setItem('soggify_settings', JSON.stringify(settings));
-    alert('Settings saved! ✨');
+    try {
+      localStorage.setItem('soggify_settings', JSON.stringify(settings));
+      setSaveStatus('success');
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
   };
 
   const tabs = [
@@ -562,9 +584,12 @@ const Settings = ({ currentUser }) => {
       </div>
 
       <div className="settings-footer">
-        <button className="save-btn" onClick={handleSave}>
+        <button 
+          className={`save-btn ${saveStatus === 'success' ? 'success' : saveStatus === 'error' ? 'error' : ''}`}
+          onClick={handleSave}
+        >
           <Save size={18} />
-          Save Changes
+          {saveStatus === 'success' ? '✨ Saved!' : saveStatus === 'error' ? 'Error Saving' : 'Save Changes'}
         </button>
       </div>
     </div>

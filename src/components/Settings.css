@@ -426,11 +426,30 @@
 .save-btn {
   background: linear-gradient(135deg, #a855f7, #ec4899);
   color: #fff;
+  transition: all 0.3s;
 }
 
 .save-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+}
+
+.save-btn.success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  animation: pulse 0.5s ease;
+}
+
+.save-btn.error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 /* Custom scrollbar */

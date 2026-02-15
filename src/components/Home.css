@@ -191,6 +191,68 @@
   text-overflow: ellipsis;
 }
 
+/* Empty States */
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  gap: 12px;
+}
+
+.empty-state svg {
+  opacity: 0.4;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 18px;
+  font-family: 'GothamMedium', sans-serif;
+}
+
+.empty-subtitle {
+  font-size: 14px !important;
+  font-family: 'GothamLight', sans-serif !important;
+  opacity: 0.7;
+}
+
+.empty-state-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+.empty-icon {
+  opacity: 0.3;
+  margin-bottom: 20px;
+  color: #a855f7;
+}
+
+.empty-title {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-family: 'GothamBold', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.empty-text {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'GothamLight', sans-serif;
+}
+
 @media (max-width: 768px) {
   .quick-picks {
     grid-template-columns: 1fr;
