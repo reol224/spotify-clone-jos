@@ -26,13 +26,22 @@ function RadioIcon() {
   );
 }
 
-function CodeIcon() {
+function LibraryIcon() {
     return (
       <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style={{verticalAlign: 'middle'}}>
-        <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z" />
       </svg>
     );
   }
+
+function ImportIcon() {
+    return (
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style={{verticalAlign: 'middle'}}>
+        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
+      </svg>
+    );
+  }
+
 const Links = () => {
   return (
     <div className="links-panel">
@@ -55,15 +64,16 @@ const Links = () => {
         </Link>
       </div>
       <div className="link-item">
-        <a
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="link"
-        >
-        <CodeIcon />
-        <span className="link-name">Learn React</span>
-        </a>
+        <Link to="/library" className="link">
+          <LibraryIcon />
+          <span className="link-name">Your Library</span>
+        </Link>
+      </div>
+      <div className="link-item">
+        <Link to="/import" className="link">
+          <ImportIcon />
+          <span className="link-name">Import Music</span>
+        </Link>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import "./App.css";
-import {Browse, Home, Links, Playlists, Radio, UserBubble} from "./components";
+import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library} from "./components";
 import {Route, Switch, useLocation} from "react-router-dom";
 import { Play, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat } from 'lucide-react';
 
@@ -10,6 +10,8 @@ function App() {
     switch(location.pathname) {
       case '/browse': return 'Browse';
       case '/radio': return 'Radio';
+      case '/library': return 'Your Library';
+      case '/import': return 'Import Music';
       default: return 'Home';
     }
   };
@@ -51,6 +53,8 @@ function App() {
             <Route exact path="/" component={Home} />
             <Route path="/browse" component={Browse} />
             <Route path="/radio" component={Radio} />
+            <Route path="/library" component={Library} />
+            <Route path="/import" component={ImportMusic} />
           </Switch>
         </section>
       </section>
