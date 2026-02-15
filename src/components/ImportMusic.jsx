@@ -25,7 +25,7 @@ const ImportMusic = ({ onImportComplete }) => {
     setIsDragging(false);
   }, []);
 
-  const processFiles = async (files) => {
+  const processFiles = useCallback(async (files) => {
     if (!files || files.length === 0) return;
 
     setIsProcessing(true);
@@ -55,7 +55,7 @@ const ImportMusic = ({ onImportComplete }) => {
     }
 
     setIsProcessing(false);
-  };
+  }, [onImportComplete]);
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
@@ -67,21 +67,36 @@ const ImportMusic = ({ onImportComplete }) => {
       const files = [];
       const processEntry = async (entry) => {
         if (entry.isFile) {
-          return new Promise((resolve) => {
+          return new Promise((resolve, reject) => {
             entry.file((file) => {
               files.push(file);
               resolve();
+            }, (err) => {
+              reject(err);
             });
           });
         } else if (entry.isDirectory) {
           const reader = entry.createReader();
-          return new Promise((resolve) => {
-            reader.readEntries(async (entries) => {
-              for (const e of entries) {
-                await processEntry(e);
-              }
-              resolve();
-            });
+          return new Promise((resolve, reject) => {
+            const readAllEntries = () => {
+              reader.readEntries(async (entries) => {
+                try {
+                  if (entries.length === 0) {
+                    resolve();
+                    return;
+                  }
+                  for (const e of entries) {
+                    await processEntry(e);
+                  }
+                  readAllEntries();
+                } catch (err) {
+                  reject(err);
+                }
+              }, (err) => {
+                reject(err);
+              });
+            };
+            readAllEntries();
           });
         }
       };
@@ -98,7 +113,7 @@ const ImportMusic = ({ onImportComplete }) => {
     } else {
       processFiles(Array.from(e.dataTransfer.files));
     }
-  }, []);
+  }, [processFiles]);
 
   const handleFileSelect = (e) => {
     processFiles(Array.from(e.target.files));

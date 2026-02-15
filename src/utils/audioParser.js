@@ -65,6 +65,7 @@ function parseID3v2(buffer) {
       }
       // const frameFlags = view.getUint16(offset + 8);
       offset += 10;
+      if (frameSize <= 0 || offset + frameSize > end) break;
       frameData = new Uint8Array(buffer, offset, Math.min(frameSize, end - offset));
     } else if (version === 2) {
       // ID3v2.2 has 3-character frame IDs
@@ -78,6 +79,7 @@ function parseID3v2(buffer) {
 
       frameSize = (view.getUint8(offset + 3) << 16) | (view.getUint8(offset + 4) << 8) | view.getUint8(offset + 5);
       offset += 6;
+      if (frameSize <= 0 || offset + frameSize > end) break;
       frameData = new Uint8Array(buffer, offset, Math.min(frameSize, end - offset));
     } else {
       break;
@@ -123,7 +125,7 @@ function decodeTextFrame(data) {
 
   if (encoding === 0) {
     // ISO-8859-1
-    return String.fromCharCode(...textBytes).replace(/\0/g, '');
+    return new TextDecoder('iso-8859-1').decode(textBytes).replace(/\0/g, '');
   } else if (encoding === 1) {
     // UTF-16 with BOM
     return decodeUTF16(textBytes);
@@ -135,7 +137,7 @@ function decodeTextFrame(data) {
     return new TextDecoder('utf-8').decode(textBytes).replace(/\0/g, '');
   }
 
-  return String.fromCharCode(...textBytes).replace(/\0/g, '');
+  return new TextDecoder('iso-8859-1').decode(textBytes).replace(/\0/g, '');
 }
 
 function decodeUTF16(bytes) {
@@ -250,7 +252,7 @@ function getAudioDuration(file) {
  * Parse a single audio file and extract metadata
  */
 export async function parseAudioFile(file) {
-  const id = 'song_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  const id = 'song_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
   const audioUrl = URL.createObjectURL(file);
 
   // Default metadata from filename
@@ -296,6 +298,13 @@ export async function parseAudioFile(file) {
     fileSize: file.size,
     fileType: file.type,
     addedAt: new Date().toISOString(),
+    /**
+     * Call this when the audio URL is no longer needed to free the object URL
+     * and prevent memory leaks. After calling, audioUrl will no longer be valid.
+     */
+    revokeAudioUrl() {
+      URL.revokeObjectURL(audioUrl);
+    },
   };
 }
 
@@ -318,6 +327,17 @@ export async function parseAudioFiles(files, onProgress) {
   }
 
   return results;
+}
+
+/**
+ * Revoke the object URL for a parsed audio track to free memory.
+ * Can be used as an alternative to calling track.revokeAudioUrl().
+ * @param {object} track - A track object returned by parseAudioFile
+ */
+export function revokeAudioUrl(track) {
+  if (track && track.audioUrl) {
+    URL.revokeObjectURL(track.audioUrl);
+  }
 }
 
 export function formatDuration(seconds) {

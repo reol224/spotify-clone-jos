@@ -42,7 +42,7 @@ const Home = () => {
       <section className="section">
         <div className="section-header">
           <h2 className="section-title">Featured Albums</h2>
-          <a href="#" className="section-link">Show all</a>
+          <button type="button" className="section-link" onClick={(e) => e.preventDefault()}>Show all</button>
         </div>
         <div className="cards-grid">
           {featuredAlbums.map((album, index) => (
@@ -63,7 +63,7 @@ const Home = () => {
       <section className="section">
         <div className="section-header">
           <h2 className="section-title">Recently Played</h2>
-          <a href="#" className="section-link">Show all</a>
+          <button type="button" className="section-link" onClick={(e) => e.preventDefault()}>Show all</button>
         </div>
         <div className="cards-grid">
           {recentlyPlayed.map((item, index) => (

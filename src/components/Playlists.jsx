@@ -8,12 +8,16 @@ const Playlists = () => {
 
   async function fetchData() {
     try {
-      const res = await fetch("user/playlist");
+      const res = await fetch("/api/user/playlist");
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
       const data = await res.json();
-      setPlaylists(data.items.map(item => {
+      const items = Array.isArray(data?.items) ? data.items : [];
+      setPlaylists(items.map(item => {
         return {
-          name: item.name, 
-          href: item.externalUrls.externalUrls.spotify
+          name: item?.name ?? "Untitled Playlist",
+          href: item?.externalUrls?.externalUrls?.spotify ?? "#"
         }
       }));
       setLoading(false);

@@ -9,11 +9,13 @@ const UserBubble = () => {
 
   async function fetchData() {
     try {
-      const res = await fetch("api/users/me");
+      const res = await fetch("/api/users/me");
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
       const json = await res.json();
       setUser(json);
       setLoading(false);
-      console.log(json);
     } catch (err) {
       console.log("Failed to fetch user:", err);
       setError(true);
