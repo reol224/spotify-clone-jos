@@ -2,17 +2,19 @@ import "./App.css";
 import {Browse, Home, Links, Playlists, Radio, UserBubble, ImportMusic, Library} from "./components";
 import Login from "./components/Login";
 import Settings from "./components/Settings";
-import {Route, Switch, useLocation} from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import * as playerStore from './utils/playerStore';
 import { toggleFavorite } from './utils/musicStore';
+import PlaylistView from "./components/PlaylistView";
 
 function App() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [playerState, setPlayerState] = useState(playerStore.getPlayerState());
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
 
   useEffect(() => {
     const user = localStorage.getItem('soggify_current_user');
@@ -49,7 +51,15 @@ function App() {
     return <Login onLogin={handleLogin} />;
   }
   
+  const handleSelectPlaylist = (playlist) => {
+    setSelectedPlaylist(playlist);
+    window.location.href = `/library?playlist=${playlist.id}`;
+  };
+  
   const getPageTitle = () => {
+    if (location.pathname.startsWith('/playlist/')) {
+      return selectedPlaylist?.name || 'Playlist';
+    }
     switch(location.pathname) {
       case '/browse': return 'Browse';
       case '/radio': return 'Radio';
@@ -107,7 +117,7 @@ function App() {
           </div>
         </div>
         <Links />
-        <Playlists />
+        <Playlists onSelectPlaylist={handleSelectPlaylist} />
       </section>
       <section className="middle-panel">
         <section className="header-panel">
@@ -131,6 +141,7 @@ function App() {
             <Route path="/library" component={Library} />
             <Route path="/import" component={ImportMusic} />
             <Route path="/settings" render={() => <Settings currentUser={currentUser} />} />
+            <Route path="/playlist/:playlistId" component={PlaylistView} />
           </Switch>
         </section>
       </section>

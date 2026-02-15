@@ -3,9 +3,11 @@ import { Play, Plus, Music, Trash2, ListMusic, Clock, MoreHorizontal, X } from '
 import { getLibrary, subscribe, removeSong, createPlaylist, deletePlaylist, addSongToPlaylist, removeSongFromPlaylist, getSongsForPlaylist } from '../utils/musicStore';
 import { formatDuration } from '../utils/audioParser';
 import * as playerStore from '../utils/playerStore';
+import { useLocation } from 'react-router-dom';
 import './Library.css';
 
 const Library = () => {
+  const location = useLocation();
   const [library, setLibrary] = useState(getLibrary());
   const [view, setView] = useState('songs'); // 'songs' | 'playlists' | 'playlist-detail'
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
@@ -18,6 +20,22 @@ const Library = () => {
     const unsub = subscribe((lib) => setLibrary({ ...lib }));
     return unsub;
   }, []);
+
+  useEffect(() => {
+    // Check if there's a playlist query parameter
+    const params = new URLSearchParams(location.search);
+    const playlistId = params.get('playlist');
+    
+    if (playlistId) {
+      const playlist = library.playlists.find(p => p.id === playlistId);
+      if (playlist) {
+        setSelectedPlaylist(playlist);
+        setView('playlist-detail');
+        // Clean up the URL
+        window.history.replaceState({}, document.title, '/library');
+      }
+    }
+  }, [location.search, library.playlists]);
 
   const handleCreatePlaylist = (e) => {
     e.preventDefault();
