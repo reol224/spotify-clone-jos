@@ -1,4 +1,4 @@
-package main.java.com.jos.spotifyclone.model;
+package com.jos.spotifyclone.model;
 
 import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -21,7 +21,6 @@ public class EpisodeModel {
     public String getName() {
         return name;
     }
-
 
     public String[] getLanguage() {
         return language;

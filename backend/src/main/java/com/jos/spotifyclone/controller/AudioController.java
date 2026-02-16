@@ -1,4 +1,4 @@
-package main.java.com.jos.spotifyclone.controller;
+package com.jos.spotifyclone.controller;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.jos.spotifyclone.services.SpotifyConnect;
+
 import se.michaelthelin.spotify.model_objects.miscellaneous.AudioAnalysis;
 import se.michaelthelin.spotify.model_objects.specification.AudioFeatures;
-import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RestController
 @RequestMapping("api/audio")

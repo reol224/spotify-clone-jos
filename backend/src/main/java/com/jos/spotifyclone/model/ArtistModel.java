@@ -1,5 +1,4 @@
-package main.java.com.jos.spotifyclone.model;
-
+package com.jos.spotifyclone.model;
 
 import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
 import se.michaelthelin.spotify.model_objects.specification.Followers;
@@ -12,7 +11,8 @@ public class ArtistModel {
     Image[] images;
     String artistName;
 
-    public ArtistModel(ExternalUrl externalUrl, Followers followers, String[] genres, Image[] images, String artistName) {
+    public ArtistModel(ExternalUrl externalUrl, Followers followers, String[] genres, Image[] images,
+            String artistName) {
         this.externalUrl = externalUrl;
         this.followers = followers;
         this.genres = genres;

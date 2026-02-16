@@ -1,6 +1,10 @@
-package main.java.com.jos.spotifyclone.controller;
+package com.jos.spotifyclone.controller;
 
-
+import com.jos.spotifyclone.model.AlbumModel;
+import com.jos.spotifyclone.model.ArtistModel;
+import com.jos.spotifyclone.model.EpisodeModel;
+import com.jos.spotifyclone.model.TrackModel;
+import com.jos.spotifyclone.services.SpotifyConnect;
 import com.neovisionaries.i18n.CountryCode;
 import java.util.*;
 import java.util.concurrent.CancellationException;
@@ -15,11 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.michaelthelin.spotify.model_objects.special.SearchResult;
 import se.michaelthelin.spotify.model_objects.specification.*;
-import main.java.com.jos.spotifyclone.model.AlbumModel;
-import main.java.com.jos.spotifyclone.model.ArtistModel;
-import main.java.com.jos.spotifyclone.model.EpisodeModel;
-import main.java.com.jos.spotifyclone.model.TrackModel;
-import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RequestMapping("api/browse")
 @RestController
@@ -28,15 +27,16 @@ public class BrowseController {
     SpotifyConnect spotifyConnect;
     Logger logger = LoggerFactory.getLogger(BrowseController.class);
 
-    //https://developer.spotify.com/console/get-available-genre-seeds/
-    //http://localhost:8080/api/browse/recommended?seed=emo
+    // https://developer.spotify.com/console/get-available-genre-seeds/
+    // http://localhost:8080/api/browse/recommended?seed=emo
     @GetMapping("/recommended")
     public Map<String, Object> getRecommended(@RequestParam(defaultValue = "pop") String seed) {
         Map<String, Object> map = new HashMap<>();
         try {
-            var response = spotifyConnect.getSpotifyApi().getRecommendations().seed_genres(seed).build().executeAsync().join();
+            var response = spotifyConnect.getSpotifyApi().getRecommendations().seed_genres(seed).build().executeAsync()
+                    .join();
             List<TrackModel> list = new ArrayList<>();
-            for (TrackSimplified rec : response.getTracks()) {
+            for (Track rec : response.getTracks()) {
                 String name = rec.getName();
                 ExternalUrl externalUrl = rec.getExternalUrls();
 
@@ -57,7 +57,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/new-releases
+    // http://localhost:8080/api/browse/new-releases
     @GetMapping("/new-releases")
     public Map<String, Object> newReleases() {
         Map<String, Object> map = new HashMap<>();
@@ -86,7 +86,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/album?id=5zT1JLIj9E57p3e1rFm9Uq
+    // http://localhost:8080/api/browse/album?id=5zT1JLIj9E57p3e1rFm9Uq
     @GetMapping("/album")
     public Map<String, Object> getAlbum(@RequestParam String id) {
         Map<String, Object> map = new HashMap<>();
@@ -125,7 +125,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/albums/tracks?album_id=5zT1JLIj9E57p3e1rFm9Uq
+    // http://localhost:8080/api/browse/albums/tracks?album_id=5zT1JLIj9E57p3e1rFm9Uq
     @GetMapping("/albums/tracks")
     public Map<String, Object> getAlbumTrack(@RequestParam String album_id) {
         Map<String, Object> map = new HashMap<>();
@@ -155,7 +155,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/albums?ids=48I4Jtcqu5K5jZWadn035d
+    // http://localhost:8080/api/browse/albums?ids=48I4Jtcqu5K5jZWadn035d
     @GetMapping("/albums")
     public Map<String, Object> getSeveralAlbums(@RequestParam String[] ids) {
         Map<String, Object> map = new HashMap<>();
@@ -184,7 +184,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/artist?artist_id=0LcJLqbBmaGUft1e9Mm8HV
+    // http://localhost:8080/api/browse/artist?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artist")
     public Map<String, Object> getArtist(@RequestParam String artist_id) {
         Map<String, Object> map = new HashMap<>();
@@ -207,7 +207,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/artists/albums?artist_id=0LcJLqbBmaGUft1e9Mm8HV
+    // http://localhost:8080/api/browse/artists/albums?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/albums")
     public Map<String, Object> getArtistsAlbums(@RequestParam String artist_id) {
         Map<String, Object> map = new HashMap<>();
@@ -237,13 +237,14 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/artists/top?artist_id=0LcJLqbBmaGUft1e9Mm8HV
+    // http://localhost:8080/api/browse/artists/top?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/top")
     public Map<String, Object> getArtistsTopTracks(@RequestParam String artist_id) {
         Map<String, Object> map = new HashMap<>();
         try {
             CountryCode countryCode = CountryCode.US;
-            Track[] topTracks = spotifyConnect.getSpotifyApi().getArtistsTopTracks(artist_id, countryCode).build().executeAsync().join();
+            Track[] topTracks = spotifyConnect.getSpotifyApi().getArtistsTopTracks(artist_id, countryCode).build()
+                    .executeAsync().join();
 
             List<TrackModel> list = new ArrayList<>();
             for (Track track : topTracks) {
@@ -282,10 +283,11 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/artists/related?artist_id=0LcJLqbBmaGUft1e9Mm8HV
+    // http://localhost:8080/api/browse/artists/related?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/related")
     public Map<String, Object> getArtistsRelatedArtists(@RequestParam String artist_id) {
-        Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().executeAsync().join();
+        Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().executeAsync()
+                .join();
 
         List<ArtistModel> list = new ArrayList<>();
         for (Artist artist : response) {
@@ -302,7 +304,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/artists?ids=0LcJLqbBmaGUft1e9Mm8HV
+    // http://localhost:8080/api/browse/artists?ids=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists")
     public Map<String, Object> getSeveralArtists(@RequestParam String[] ids) {
         Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().executeAsync().join();
@@ -322,8 +324,8 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/categories  run this first to find categories
-    //http://localhost:8080/api/browse/category?id=classical
+    // http://localhost:8080/api/browse/categories run this first to find categories
+    // http://localhost:8080/api/browse/category?id=classical
     @GetMapping("/category")
     public Map<String, Object> getCategory(@RequestParam String id) {
         Category response = spotifyConnect.getSpotifyApi().getCategory(id).build().executeAsync().join();
@@ -335,8 +337,8 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/categories  run this first to find categories
-    //http://localhost:8080/api/browse/categories/playlist?id=classical
+    // http://localhost:8080/api/browse/categories run this first to find categories
+    // http://localhost:8080/api/browse/categories/playlist?id=classical
     @GetMapping("/categories/playlist")
     public Map<String, Object> getCategoryPlaylist(@RequestParam String id) {
         var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().executeAsync().join();
@@ -371,7 +373,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/episode?id=4GI3dxEafwap1sFiTGPKd1
+    // http://localhost:8080/api/browse/episode?id=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episode")
     public Map<String, Object> getEpisode(@RequestParam String id) {
         Episode response = spotifyConnect.getSpotifyApi().getEpisode(id).build().executeAsync().join();
@@ -391,7 +393,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/episodes?ids=4GI3dxEafwap1sFiTGPKd1
+    // http://localhost:8080/api/browse/episodes?ids=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episodes")
     public Map<String, Object> getSeveralEpisodes(@RequestParam String ids) {
         Episode response = spotifyConnect.getSpotifyApi().getEpisode(ids).build().executeAsync().join();
@@ -411,7 +413,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/show?id=5AvwZVawapvyhJUIx71pdJ
+    // http://localhost:8080/api/browse/show?id=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/show")
     public Map<String, Object> getShow(@RequestParam String id) {
         Show response = spotifyConnect.getSpotifyApi().getShow(id).build().executeAsync().join();
@@ -426,7 +428,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/shows?ids=5AvwZVawapvyhJUIx71pdJ
+    // http://localhost:8080/api/browse/shows?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows")
     public Map<String, Object> getSeveralShows(@RequestParam String ids) {
         Show response = spotifyConnect.getSpotifyApi().getShow(ids).build().executeAsync().join();
@@ -441,7 +443,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/shows/episodes?ids=5AvwZVawapvyhJUIx71pdJ
+    // http://localhost:8080/api/browse/shows/episodes?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows/episodes")
     public Map<String, Object> getShowsEpisodes(@RequestParam String ids) {
         var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().executeAsync().join();
@@ -461,7 +463,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/track?id=01iyCAUm8EvOFqVWYJ3dVX
+    // http://localhost:8080/api/browse/track?id=01iyCAUm8EvOFqVWYJ3dVX
     @GetMapping("/track")
     public Map<String, Object> getTrack(@RequestParam String id) {
         Track response = spotifyConnect.getSpotifyApi().getTrack(id).build().executeAsync().join();
@@ -497,7 +499,7 @@ public class BrowseController {
         return map;
     }
 
-    //http://localhost:8080/api/browse/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
+    // http://localhost:8080/api/browse/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
     @GetMapping("/tracks")
     public Map<String, Object> getSeveralTracks(@RequestParam String[] ids) {
         Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().executeAsync().join();
@@ -538,22 +540,23 @@ public class BrowseController {
         return spotifyConnect.getSpotifyApi().getAvailableGenreSeeds().build().executeAsync().join();
     }
 
-    //http://localhost:8080/api/browse/search?name=abba&type=artist
+    // http://localhost:8080/api/browse/search?name=abba&type=artist
     @GetMapping("/search")
     public Map<String, Object> searchItems(@RequestParam String name) {
-        SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build().executeAsync().join();
+        SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build()
+                .executeAsync().join();
         AlbumSimplified[] albums = searchResult.getAlbums().getItems();
 
-        //using streams
+        // using streams
         List<AlbumModel> streamAlbum = Arrays.stream(albums)
                 .map(i -> new AlbumModel(i.getName(),
                         Arrays.stream(i.getArtists())
                                 .map(ArtistSimplified::getName)
-                                .collect(Collectors.toList()), i.getImages(), i.getExternalUrls()))
+                                .collect(Collectors.toList()),
+                        i.getImages(), i.getExternalUrls()))
                 .collect(Collectors.toList());
 
-
-        //for loop
+        // for loop
         List<AlbumModel> newList = new ArrayList<>();
         for (AlbumSimplified i : albums) {
             List<Object> artists = new ArrayList<>();

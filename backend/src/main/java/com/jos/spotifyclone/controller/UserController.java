@@ -1,12 +1,15 @@
-package main.java.com.jos.spotifyclone.controller;
+package com.jos.spotifyclone.controller;
 
-
+import com.jos.spotifyclone.model.AlbumModel;
+import com.jos.spotifyclone.model.ArtistModel;
+import com.jos.spotifyclone.model.PlaylistModel;
+import com.jos.spotifyclone.model.ShowModel;
+import com.jos.spotifyclone.model.TrackModel;
+import com.jos.spotifyclone.services.SpotifyConnect;
 import com.neovisionaries.i18n.CountryCode;
 import java.io.IOException;
 import java.util.*;
 
-import main.java.com.jos.spotifyclone.model.*;
-import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +46,10 @@ public class UserController {
 
     }
 
-    //http://localhost:8080/api/users/profile?user_ids=provalio
+    // http://localhost:8080/api/users/profile?user_ids=provalio
     @GetMapping("/profile")
-    public Map<String, Object> anotherUserProfile(@RequestParam String user_ids) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> anotherUserProfile(@RequestParam String user_ids)
+            throws ParseException, SpotifyWebApiException, IOException {
         User response = spotifyConnect.getSpotifyApi().getUsersProfile(user_ids).build().execute();
         String displayName = response.getDisplayName();
         String birthdate = response.getBirthdate();
@@ -62,8 +66,10 @@ public class UserController {
     }
 
     @GetMapping("/playlists")
-    public Map<String, Object> playlistsOfCurrentUser(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer offset) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> playlistsOfCurrentUser(
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "0") Integer offset)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getListOfCurrentUsersPlaylists()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -91,12 +97,14 @@ public class UserController {
      * Required. The ID type: currently only artist is supported.
      *
      * @param limit Optional.
-     *              The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
-     * @param after Optional. The last artist ID retrieved from the previous request.
+     *              The maximum number of items to return. Default: 20. Minimum: 1.
+     *              Maximum: 50.
+     * @param after Optional. The last artist ID retrieved from the previous
+     *              request.
      */
     @GetMapping("/following")
     public Map<String, Object> followedArtists(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                               @RequestParam(required = false) String after) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false) String after) throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getUsersFollowedArtists(ModelObjectType.ARTIST)
                 .setQueryParameter("limit", limit)
                 .build().execute();
@@ -121,19 +129,23 @@ public class UserController {
     /**
      * http://localhost:8080/api/users/check?user_ids=1l0mKo96Jh9HVYONcRl3Yp
      *
-     * @param user_ids Required. A comma-separated list of the artist or the user Spotify IDs to check.
-     *                 For example: ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
+     * @param user_ids Required. A comma-separated list of the artist or the user
+     *                 Spotify IDs to check.
+     *                 For example:
+     *                 ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
      *                 A maximum of 50 IDs can be sent in one request.
      * @param type     Required.
      *                 The ID type: either artist or user.
      */
     @GetMapping("/check")
-    public String checkFollowArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type) throws ParseException, SpotifyWebApiException, IOException {
+    public String checkFollowArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type)
+            throws ParseException, SpotifyWebApiException, IOException {
         if ("artist".equalsIgnoreCase(type)) {
-            Boolean[] response = spotifyConnect.getSpotifyApi().checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
+            Boolean[] response = spotifyConnect.getSpotifyApi()
+                    .checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
             for (Boolean b : response) {
                 if (b) {
-                    //regex removes square brackets with any content between them
+                    // regex removes square brackets with any content between them
                     return "You are already following " + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
                 }
             }
@@ -145,32 +157,41 @@ public class UserController {
     /**
      * http://localhost:8080/api/users/follow?user_ids=1l0mKo96Jh9HVYONcRl3Yp
      *
-     * @param user_ids Optional. A comma-separated list of the artist or the user Spotify IDs.
-     *                 For example: ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
+     * @param user_ids Optional. A comma-separated list of the artist or the user
+     *                 Spotify IDs.
+     *                 For example:
+     *                 ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
      *                 A maximum of 50 IDs can be sent in one request.
      * @param type     Required.
      *                 The ID type: either artist or user.
      */
     @GetMapping("/follow")
-    public String followArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type) throws ParseException, SpotifyWebApiException, IOException {
+    public String followArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type)
+            throws ParseException, SpotifyWebApiException, IOException {
         if ("artist".equalsIgnoreCase(type)) {
-            String response = spotifyConnect.getSpotifyApi().followArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
-            Boolean[] responseCheck = spotifyConnect.getSpotifyApi().checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
+            String response = spotifyConnect.getSpotifyApi().followArtistsOrUsers(ModelObjectType.ARTIST, user_ids)
+                    .build().execute();
+            Boolean[] responseCheck = spotifyConnect.getSpotifyApi()
+                    .checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
             for (Boolean b : responseCheck) {
                 if (b) {
-                    //regex removes square brackets with any content between them
-                    return "Success! You are now following " + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
+                    // regex removes square brackets with any content between them
+                    return "Success! You are now following "
+                            + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
                 }
             }
         }
 
         if ("user".equalsIgnoreCase(type)) {
-            String response = spotifyConnect.getSpotifyApi().followArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
-            Boolean[] responseCheck = spotifyConnect.getSpotifyApi().checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
+            String response = spotifyConnect.getSpotifyApi().followArtistsOrUsers(ModelObjectType.USER, user_ids)
+                    .build().execute();
+            Boolean[] responseCheck = spotifyConnect.getSpotifyApi()
+                    .checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
             for (Boolean b : responseCheck) {
                 if (b) {
-                    //regex removes square brackets with any content between them
-                    return "Success! You are now following " + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
+                    // regex removes square brackets with any content between them
+                    return "Success! You are now following "
+                            + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
                 }
             }
         }
@@ -181,31 +202,38 @@ public class UserController {
     /**
      * http://localhost:8080/api/users/unfollow?user_ids=1l0mKo96Jh9HVYONcRl3Yp
      *
-     * @param user_ids Optional. A comma-separated list of the artist or the user Spotify IDs.
-     *                 For example: ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
+     * @param user_ids Optional. A comma-separated list of the artist or the user
+     *                 Spotify IDs.
+     *                 For example:
+     *                 ids=74ASZWbe4lXaubB36ztrGX,08td7MxkoHQkXnWAYD8d6Q.
      *                 A maximum of 50 IDs can be sent in one request.
      * @param type     Required.
      *                 The ID type: either artist or user.
      */
     @GetMapping("/unfollow")
-    public String unfollowArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type) throws ParseException, SpotifyWebApiException, IOException {
+    public String unfollowArtistOrUser(@RequestParam String[] user_ids, @RequestParam String type)
+            throws ParseException, SpotifyWebApiException, IOException {
         if ("artist".equalsIgnoreCase(type)) {
-            String response = spotifyConnect.getSpotifyApi().unfollowArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
-            Boolean[] responseCheck = spotifyConnect.getSpotifyApi().checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
+            String response = spotifyConnect.getSpotifyApi().unfollowArtistsOrUsers(ModelObjectType.ARTIST, user_ids)
+                    .build().execute();
+            Boolean[] responseCheck = spotifyConnect.getSpotifyApi()
+                    .checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.ARTIST, user_ids).build().execute();
             for (Boolean b : responseCheck) {
                 if (b) {
-                    //regex removes square brackets with any content between them
+                    // regex removes square brackets with any content between them
                     return "You are following " + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
                 }
             }
         }
 
         if ("user".equalsIgnoreCase(type)) {
-            String response = spotifyConnect.getSpotifyApi().unfollowArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
-            Boolean[] responseCheck = spotifyConnect.getSpotifyApi().checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
+            String response = spotifyConnect.getSpotifyApi().unfollowArtistsOrUsers(ModelObjectType.USER, user_ids)
+                    .build().execute();
+            Boolean[] responseCheck = spotifyConnect.getSpotifyApi()
+                    .checkCurrentUserFollowsArtistsOrUsers(ModelObjectType.USER, user_ids).build().execute();
             for (Boolean b : responseCheck) {
                 if (b) {
-                    //regex removes square brackets with any content between them
+                    // regex removes square brackets with any content between them
                     return "You are following " + Arrays.toString(user_ids).replaceAll("\\[(.*?)\\]", "$1");
                 }
             }
@@ -219,14 +247,16 @@ public class UserController {
      * @param ownerId    The id of the owner of the playlist.
      * @param playlistId The Spotify ID of the playlist.
      * @param user_ids   Required. A comma-separated list of Spotify User IDs ;
-     *                   the ids of the users that you want to check to see if they follow the playlist.
+     *                   the ids of the users that you want to check to see if they
+     *                   follow the playlist.
      *                   Maximum: 5 ids.
      */
     @GetMapping("/check/playlist")
     public String checkUsersFollowPlaylist(@RequestParam String ownerId,
-                                           @RequestParam String playlistId,
-                                           @RequestParam String[] user_ids) throws ParseException, SpotifyWebApiException, IOException {
-        Boolean[] response = spotifyConnect.getSpotifyApi().checkUsersFollowPlaylist(ownerId, playlistId, user_ids).build().execute();
+            @RequestParam String playlistId,
+            @RequestParam String[] user_ids) throws ParseException, SpotifyWebApiException, IOException {
+        Boolean[] response = spotifyConnect.getSpotifyApi().checkUsersFollowPlaylist(ownerId, playlistId, user_ids)
+                .build().execute();
         for (Boolean b : response) {
             if (b) {
                 return "The users are following " + playlistId.replaceAll("\\[(.*?)\\]", "$1");
@@ -239,14 +269,19 @@ public class UserController {
      * http://localhost:8080/api/users/follow/playlist?playlistId=3AGOiaoRXMSjswCLtuNqv5
      *
      * @param playlistId The Spotify ID of the playlist.
-     *                   Any playlist can be followed, regardless of its public/private status, as long as you know its playlist ID.
+     *                   Any playlist can be followed, regardless of its
+     *                   public/private status, as long as you know its playlist ID.
      * @param public_    Optional.
      *                   Defaults to true.
-     *                   If true the playlist will be included in user’s public playlists, if false it will remain private.
-     *                   To be able to follow playlists privately, the user must have granted the playlist-modify-private scope.
+     *                   If true the playlist will be included in user’s public
+     *                   playlists, if false it will remain private.
+     *                   To be able to follow playlists privately, the user must
+     *                   have granted the playlist-modify-private scope.
      */
     @GetMapping("/follow/playlist")
-    public String followPlaylist(@RequestParam String playlistId, @RequestParam(required = false, defaultValue = "true") boolean public_) throws ParseException, SpotifyWebApiException, IOException {
+    public String followPlaylist(@RequestParam String playlistId,
+            @RequestParam(required = false, defaultValue = "true") boolean public_)
+            throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().followPlaylist(playlistId, public_).build().execute();
         return "Success! You are now following the " + playlistId.replaceAll("\\[(.*?)\\]", "$1") + " playlist.";
     }
@@ -255,27 +290,32 @@ public class UserController {
      * http://localhost:8080/api/users/unfollow/playlist?ownerId=abbaspotify&playlistId=3AGOiaoRXMSjswCLtuNqv5
      *
      * @param ownerId    The id of the owner of the playlist.
-     * @param playlistId The Spotify ID of the playlist that is to be no longer followed.
+     * @param playlistId The Spotify ID of the playlist that is to be no longer
+     *                   followed.
      */
     @GetMapping("/unfollow/playlist")
-    public String unfollowPlaylist(String ownerId, @RequestParam String playlistId) throws ParseException, SpotifyWebApiException, IOException {
+    public String unfollowPlaylist(String ownerId, @RequestParam String playlistId)
+            throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().unfollowPlaylist(ownerId, playlistId).build().execute();
         return "You are not following " + playlistId.replaceAll("\\[(.*?)\\]", "$1") + " anymore.";
     }
 
     /**
      * @param limit  Optional.
-     *               The maximum number of objects to return. Default: 20. Minimum: 1. Maximum: 50.
+     *               The maximum number of objects to return. Default: 20. Minimum:
+     *               1. Maximum: 50.
      * @param offset Optional.
      *               The index of the first object to return.
-     *               Default: 0 (i.e., the first object). Use with limit to get the next set of objects.
+     *               Default: 0 (i.e., the first object). Use with limit to get the
+     *               next set of objects.
      * @param market Optional.
      *               An ISO 3166-1 alpha-2 country code or the string from_token.
      */
     @GetMapping("/saved/albums")
     public Map<String, Object> savedAlbums(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
-                                           @RequestParam(required = false, defaultValue = "US") String market) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "US") String market)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getCurrentUsersSavedAlbums()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -303,14 +343,17 @@ public class UserController {
 
     /**
      * @param limit  Optional.
-     *               The maximum number of objects to return. Default: 20. Minimum: 1. Maximum: 50.
+     *               The maximum number of objects to return. Default: 20. Minimum:
+     *               1. Maximum: 50.
      * @param offset Optional.
      *               The index of the first object to return.
-     *               Default: 0 (i.e., the first object). Use with limit to get the next set of objects.
+     *               Default: 0 (i.e., the first object). Use with limit to get the
+     *               next set of objects.
      */
     @GetMapping("/saved/shows")
     public Map<String, Object> savedShows(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                          @RequestParam(required = false, defaultValue = "0") Integer offset) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "0") Integer offset)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getUsersSavedShows()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -332,17 +375,20 @@ public class UserController {
 
     /**
      * @param limit  Optional.
-     *               The maximum number of objects to return. Default: 20. Minimum: 1. Maximum: 50.
+     *               The maximum number of objects to return. Default: 20. Minimum:
+     *               1. Maximum: 50.
      * @param offset Optional.
      *               The index of the first object to return.
-     *               Default: 0 (i.e., the first object). Use with limit to get the next set of objects.
+     *               Default: 0 (i.e., the first object). Use with limit to get the
+     *               next set of objects.
      * @param market Optional.
      *               An ISO 3166-1 alpha-2 country code or the string from_token.
      */
     @GetMapping("/saved/tracks")
     public Map<String, Object> savedTracks(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                           @RequestParam(required = false, defaultValue = "0") Integer offset,
-                                           @RequestParam(required = false, defaultValue = "US") String market) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "US") String market)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getUsersSavedTracks()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -381,7 +427,8 @@ public class UserController {
      * http://localhost:8080/api/users/remove/albums?ids=<replace with albums id>
      *
      * @param ids Optional.
-     *            A comma-separated list of the Spotify IDs. For example: ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M.
+     *            A comma-separated list of the Spotify IDs. For example:
+     *            ids=4iV5W9uYEdYUVa79Axb7Rh,1301WleyT98MSxVHPZCA6M.
      *            Maximum: 50 IDs.
      */
     @GetMapping("/remove/albums")
@@ -395,14 +442,22 @@ public class UserController {
      * http://localhost:8080/api/users/remove/shows?ids=<replace with shows id>
      *
      * @param ids    Required.
-     *               A comma-separated list of Spotify IDs for the shows to be deleted from the user’s library.
+     *               A comma-separated list of Spotify IDs for the shows to be
+     *               deleted from the user’s library.
      * @param market Optional.
-     *               An ISO 3166-1 alpha-2 country code. If a country code is specified, only shows that are available in that market will be removed.
-     *               If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
-     *               Note: If neither market or user country are provided, the content is considered unavailable for the client.
+     *               An ISO 3166-1 alpha-2 country code. If a country code is
+     *               specified, only shows that are available in that market will be
+     *               removed.
+     *               If a valid user access token is specified in the request
+     *               header, the country associated with the user account will take
+     *               priority over this parameter.
+     *               Note: If neither market or user country are provided, the
+     *               content is considered unavailable for the client.
      */
     @GetMapping("/remove/shows")
-    public String removeShows(@RequestParam String[] ids, @RequestParam(required = false, defaultValue = "US") String market) throws ParseException, SpotifyWebApiException, IOException {
+    public String removeShows(@RequestParam String[] ids,
+            @RequestParam(required = false, defaultValue = "US") String market)
+            throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().removeUsersSavedShows(ids)
                 .setQueryParameter("market", market)
                 .build().execute();
@@ -476,12 +531,14 @@ public class UserController {
      *            Maximum: 50 IDs.
      */
     @GetMapping("/check/albums")
-    public String checkSavedAlbums(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
+    public String checkSavedAlbums(@RequestParam String[] ids)
+            throws ParseException, SpotifyWebApiException, IOException {
         Boolean[] response = spotifyConnect.getSpotifyApi().checkUsersSavedAlbums(ids).build().execute();
         for (Boolean b : response) {
             if (b) {
-                //regex removes square brackets with any content between them
-                return "You already have the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " albums saved.");
+                // regex removes square brackets with any content between them
+                return "You already have the "
+                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " albums saved.");
             }
         }
         return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " albums.");
@@ -495,11 +552,12 @@ public class UserController {
      *            Maximum: 50 IDs.
      */
     @GetMapping("/check/shows")
-    public String checkSavedShows(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
+    public String checkSavedShows(@RequestParam String[] ids)
+            throws ParseException, SpotifyWebApiException, IOException {
         Boolean[] response = spotifyConnect.getSpotifyApi().checkUsersSavedShows(ids).build().execute();
         for (Boolean b : response) {
             if (b) {
-                //regex removes square brackets with any content between them
+                // regex removes square brackets with any content between them
                 return "You already have the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " shows saved.");
             }
         }
@@ -515,12 +573,14 @@ public class UserController {
      *            Maximum: 50 IDs.
      */
     @GetMapping("/check/tracks")
-    public String checkSavedTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
+    public String checkSavedTracks(@RequestParam String[] ids)
+            throws ParseException, SpotifyWebApiException, IOException {
         Boolean[] response = spotifyConnect.getSpotifyApi().checkUsersSavedTracks(ids).build().execute();
         for (Boolean b : response) {
             if (b) {
-                //regex removes square brackets with any content between them
-                return "You already have the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " tracks saved.");
+                // regex removes square brackets with any content between them
+                return "You already have the "
+                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " tracks saved.");
             }
         }
         return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " tracks.");
@@ -528,19 +588,25 @@ public class UserController {
 
     /**
      * @param limit      Optional.
-     *                   The number of entities to return. Default: 20. Minimum: 1. Maximum: 50. For example: limit=2
+     *                   The number of entities to return. Default: 20. Minimum: 1.
+     *                   Maximum: 50. For example: limit=2
      * @param offset     Optional.
-     *                   The index of the first entity to return. Default: 0 (i.e., the first track). Use with limit to get the next set of entities.
+     *                   The index of the first entity to return. Default: 0 (i.e.,
+     *                   the first track). Use with limit to get the next set of
+     *                   entities.
      * @param time_range Optional.
      *                   Over what time frame the affinities are computed.
-     *                   Valid values: long_term (calculated from several years of data and including all new data as it becomes available),
-     *                   medium_term (approximately last 6 months), short_term (approximately last 4 weeks).
+     *                   Valid values: long_term (calculated from several years of
+     *                   data and including all new data as it becomes available),
+     *                   medium_term (approximately last 6 months), short_term
+     *                   (approximately last 4 weeks).
      *                   Default: medium_term.
      */
     @GetMapping("/top/artists")
     public Map<String, Object> getTopArtists(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                             @RequestParam(required = false, defaultValue = "0") Integer offset,
-                                             @RequestParam(required = false, defaultValue = "medium_term") String time_range) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "medium_term") String time_range)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getUsersTopArtists()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -565,19 +631,25 @@ public class UserController {
 
     /**
      * @param limit      Optional.
-     *                   The number of entities to return. Default: 20. Minimum: 1. Maximum: 50. For example: limit=2
+     *                   The number of entities to return. Default: 20. Minimum: 1.
+     *                   Maximum: 50. For example: limit=2
      * @param offset     Optional.
-     *                   The index of the first entity to return. Default: 0 (i.e., the first track). Use with limit to get the next set of entities.
+     *                   The index of the first entity to return. Default: 0 (i.e.,
+     *                   the first track). Use with limit to get the next set of
+     *                   entities.
      * @param time_range Optional.
      *                   Over what time frame the affinities are computed.
-     *                   Valid values: long_term (calculated from several years of data and including all new data as it becomes available),
-     *                   medium_term (approximately last 6 months), short_term (approximately last 4 weeks).
+     *                   Valid values: long_term (calculated from several years of
+     *                   data and including all new data as it becomes available),
+     *                   medium_term (approximately last 6 months), short_term
+     *                   (approximately last 4 weeks).
      *                   Default: medium_term.
      */
     @GetMapping("/top/tracks")
     public Map<String, Object> getTopTracks(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                            @RequestParam(required = false, defaultValue = "0") Integer offset,
-                                            @RequestParam(required = false, defaultValue = "medium_term") String time_range) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "medium_term") String time_range)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getUsersTopTracks()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -618,22 +690,30 @@ public class UserController {
     }
 
     /**
-     * TODO wait for update so you can get the items from getItems since its available now
+     * TODO wait for update so you can get the items from getItems since its
+     * available now
      *
      * @param limit      Optional.
-     *                   The number of entities to return. Default: 20. Minimum: 1. Maximum: 50. For example: limit=2
+     *                   The number of entities to return. Default: 20. Minimum: 1.
+     *                   Maximum: 50. For example: limit=2
      * @param offset     Optional.
-     *                   The index of the first entity to return. Default: 0 (i.e., the first track). Use with limit to get the next set of entities.
+     *                   The index of the first entity to return. Default: 0 (i.e.,
+     *                   the first track). Use with limit to get the next set of
+     *                   entities.
      * @param time_range Optional.
      *                   Over what time frame the affinities are computed.
-     *                   Valid values: long_term (calculated from several years of data and including all new data as it becomes available),
-     *                   medium_term (approximately last 6 months), short_term (approximately last 4 weeks).
+     *                   Valid values: long_term (calculated from several years of
+     *                   data and including all new data as it becomes available),
+     *                   medium_term (approximately last 6 months), short_term
+     *                   (approximately last 4 weeks).
      *                   Default: medium_term.
      */
     @GetMapping("/top")
-    public Map<String, Object> getTopArtistsAndTracks(@RequestParam(required = false, defaultValue = "20") Integer limit,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer offset,
-                                                      @RequestParam(required = false, defaultValue = "medium_term") String time_range) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> getTopArtistsAndTracks(
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "medium_term") String time_range)
+            throws ParseException, SpotifyWebApiException, IOException {
         var responseArtist = spotifyConnect.getSpotifyApi().getUsersTopArtists()
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -690,15 +770,19 @@ public class UserController {
      * @param user_id Required.
      *                The user’s Spotify user ID.
      * @param limit   Optional.
-     *                The maximum number of playlists to return. Default: 20. Minimum: 1. Maximum: 50.
+     *                The maximum number of playlists to return. Default: 20.
+     *                Minimum: 1. Maximum: 50.
      * @param offset  Optional.
-     *                The index of the first playlist to return. Default: 0 (the first object).
-     *                Maximum offset: 100.000. Use with limit to get the next set of playlists.
+     *                The index of the first playlist to return. Default: 0 (the
+     *                first object).
+     *                Maximum offset: 100.000. Use with limit to get the next set of
+     *                playlists.
      */
     @GetMapping("/playlists/user")
     public Map<String, Object> getListOfAnotherUserPlaylists(@RequestParam String user_id,
-                                                             @RequestParam(required = false, defaultValue = "20") Integer limit,
-                                                             @RequestParam(required = false, defaultValue = "0") Integer offset) throws ParseException, SpotifyWebApiException, IOException {
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "0") Integer offset)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().getListOfUsersPlaylists(user_id)
                 .setQueryParameter("limit", limit)
                 .setQueryParameter("offset", offset)
@@ -719,5 +803,3 @@ public class UserController {
         return map;
     }
 }
-
-

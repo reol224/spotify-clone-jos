@@ -1,4 +1,4 @@
-package java.com.jos.spotifyclone;
+package com.jos.spotifyclone;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

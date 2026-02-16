@@ -1,4 +1,4 @@
-package main.java.com.jos.spotifyclone.config;
+package com.jos.spotifyclone.config;
 
 import lombok.Getter;
 import lombok.Setter;

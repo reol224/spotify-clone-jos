@@ -1,5 +1,4 @@
-package main.java.com.jos.spotifyclone.services;
-
+package com.jos.spotifyclone.services;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,8 +26,7 @@ public class SpotifyConnect {
     public SpotifyConnect(
             @Value("${spotify.api.clientId}") String clientId,
             @Value("${spotify.api.secretId}") String secretId,
-            @Value("${spotify.api.redirectUri}") String redirectUri
-    ) {
+            @Value("${spotify.api.redirectUri}") String redirectUri) {
         this.spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(secretId)
@@ -54,7 +52,6 @@ public class SpotifyConnect {
                 "user-modify-playback-state");
     }
 
-
     @PostConstruct
     public void openAuthWindow() {
         final URI uri = authorizationCodeUriRequestBuilder.build().execute();
@@ -63,21 +60,24 @@ public class SpotifyConnect {
             try {
                 runtime.exec("rundll32 url.dll,FileProtocolHandler " + uri);
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "If you're running on Windows and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE,
+                        "If you're running on Windows and read this it looks like we can't open your browser...");
             }
         }
         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             try {
                 runtime.exec("open " + uri);
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "If you're running on MacOS and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE,
+                        "If you're running on MacOS and read this it looks like we can't open your browser...");
             }
         }
         if (SystemUtils.IS_OS_LINUX) {
             try {
-                runtime.exec(new String[]{"bash", "-c", "xdg-open " + uri});
+                runtime.exec(new String[] { "bash", "-c", "xdg-open " + uri });
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "If you're running on Linux and read this it looks like we can't open your browser...");
+                logger.log(Level.SEVERE,
+                        "If you're running on Linux and read this it looks like we can't open your browser...");
             }
         }
     }
