@@ -1,5 +1,4 @@
-package main.java.com.jos.spotifyclone.model;
-
+package com.jos.spotifyclone.model;
 
 import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInformation;
 import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
@@ -12,7 +11,8 @@ public class PlaylistModel {
     PlaylistTracksInformation tracks;
     Image[] playlistCover;
 
-    public PlaylistModel(String href, ExternalUrl externalUrls, String name, PlaylistTracksInformation tracks, Image[] playlistCover) {
+    public PlaylistModel(String href, ExternalUrl externalUrls, String name, PlaylistTracksInformation tracks,
+            Image[] playlistCover) {
         this.href = href;
         this.externalUrls = externalUrls;
         this.name = name;

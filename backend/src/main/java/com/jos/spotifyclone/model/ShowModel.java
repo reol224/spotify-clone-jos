@@ -1,5 +1,4 @@
-package main.java.com.jos.spotifyclone.model;
-
+package com.jos.spotifyclone.model;
 
 import se.michaelthelin.spotify.model_objects.specification.ExternalUrl;
 

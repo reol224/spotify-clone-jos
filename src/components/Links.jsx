@@ -42,6 +42,14 @@ function ImportIcon() {
     );
   }
 
+function SettingsIcon() {
+    return (
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style={{verticalAlign: 'middle'}}>
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l1.72-1.35c.15-.12.19-.34.1-.51l-1.63-2.83c-.12-.22-.37-.29-.59-.22l-2.03.81c-.42-.32-.9-.6-1.44-.79l-.3-2.16c-.04-.24-.25-.41-.5-.41h-3.26c-.25 0-.46.17-.49.41l-.3 2.16c-.54.19-1.02.47-1.44.79l-2.03-.81c-.22-.09-.47 0-.59.22L2.74 8.87c-.12.22-.04.42.1.51l1.72 1.35c-.05.3-.07.62-.07.94s.02.64.07.94l-1.72 1.35c-.15.12-.19.34-.1.51l1.63 2.83c.12.22.37.29.59.22l2.03-.81c.42.32.9.6 1.44.79l.3 2.16c.04.24.25.41.5.41h3.26c.25 0 .46-.17.49-.41l.3-2.16c.54-.19 1.02-.47 1.44-.79l2.03.81c.22.09.47 0 .59-.22l1.63-2.83c.12-.22.04-.42-.1-.51l-1.72-1.35zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+      </svg>
+    );
+  }
+
 const Links = () => {
   return (
     <div className="links-panel">
@@ -73,6 +81,12 @@ const Links = () => {
         <Link to="/import" className="link">
           <ImportIcon />
           <span className="link-name">Import Music</span>
+        </Link>
+      </div>
+      <div className="link-item">
+        <Link to="/settings" className="link">
+          <SettingsIcon />
+          <span className="link-name">Settings</span>
         </Link>
       </div>
     </div>

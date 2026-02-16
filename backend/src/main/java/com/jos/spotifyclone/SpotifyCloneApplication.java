@@ -1,4 +1,4 @@
-package main.java.com.jos.spotifyclone;
+package com.jos.spotifyclone;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -8,14 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import main.java.com.jos.spotifyclone.config.ApplicationPropertiesConfig;
+
+import com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 
 @SpringBootApplication
 @EnableScheduling
 @EnableConfigurationProperties(ApplicationPropertiesConfig.class)
 public class SpotifyCloneApplication {
 
-    @Value("spotify.api.frontendUrl")
+    @Value("${spotify.api.frontendUrl}")
     String FRONTEND_URL;
 
     public static void main(String[] args) {
@@ -27,7 +28,7 @@ public class SpotifyCloneApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/*").allowedOrigins(FRONTEND_URL);
+                registry.addMapping("/api/**").allowedOrigins(FRONTEND_URL);
             }
         };
     }

@@ -1,4 +1,4 @@
-package main.java.com.jos.spotifyclone.controller;
+package com.jos.spotifyclone.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,11 +11,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.jos.spotifyclone.model.AlbumModel;
+import com.jos.spotifyclone.model.ArtistModel;
+import com.jos.spotifyclone.model.EpisodeModel;
+import com.jos.spotifyclone.model.PlaylistModel;
+import com.jos.spotifyclone.model.ShowModel;
+import com.jos.spotifyclone.model.TrackModel;
+import com.jos.spotifyclone.services.SpotifyConnect;
+
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.miscellaneous.PlaylistTracksInformation;
 import se.michaelthelin.spotify.model_objects.specification.*;
-import main.java.com.jos.spotifyclone.model.*;
-import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RequestMapping("api/search")
 @RestController
@@ -23,10 +30,12 @@ public class SearchController {
     @Autowired
     SpotifyConnect spotifyConnect;
 
-    //TODO ${ARTIST_NAME_HERE} needs value storing elsewhere where this controller can access the search term to return searched for artist data
-    //http://localhost:8080/api/search/artist?id=drake
+    // TODO ${ARTIST_NAME_HERE} needs value storing elsewhere where this controller
+    // can access the search term to return searched for artist data
+    // http://localhost:8080/api/search/artist?id=drake
     @GetMapping("/artist")
-    public Map<String, Object> searchArtistController(@RequestParam String id) throws ParseException, IOException, SpotifyWebApiException {
+    public Map<String, Object> searchArtistController(@RequestParam String id)
+            throws ParseException, IOException, SpotifyWebApiException {
         var response = spotifyConnect.getSpotifyApi().searchArtists(id).build().execute();
 
         List<ArtistModel> list = new ArrayList<>();
@@ -45,9 +54,10 @@ public class SearchController {
         return map;
     }
 
-    //http://localhost:8080/api/search/album?id=arianagrande
+    // http://localhost:8080/api/search/album?id=arianagrande
     @GetMapping("/album")
-    public Map<String, Object> searchAlbumController(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> searchAlbumController(@RequestParam String id)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().searchAlbums(id).build().execute();
 
         List<AlbumModel> list = new ArrayList<>();
@@ -70,9 +80,10 @@ public class SearchController {
         return map;
     }
 
-    //http://localhost:8080/api/search/episode?id=lauv
+    // http://localhost:8080/api/search/episode?id=lauv
     @GetMapping("/episode")
-    public Map<String, Object> searchEpisodeController(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> searchEpisodeController(@RequestParam String id)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().searchEpisodes(id).build().execute();
 
         List<EpisodeModel> list = new ArrayList<>();
@@ -90,9 +101,10 @@ public class SearchController {
         return map;
     }
 
-    //http://localhost:8080/api/search/show?id=bieber
+    // http://localhost:8080/api/search/show?id=bieber
     @GetMapping("/show")
-    public Map<String, Object> searchShowController(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> searchShowController(@RequestParam String id)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().searchShows(id).build().execute();
 
         List<ShowModel> list = new ArrayList<>();
@@ -109,9 +121,10 @@ public class SearchController {
         return map;
     }
 
-    //http://localhost:8080/api/search/playlist?id=bieber
+    // http://localhost:8080/api/search/playlist?id=bieber
     @GetMapping("/playlist")
-    public Map<String, Object> searchPlaylistController(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> searchPlaylistController(@RequestParam String id)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().searchPlaylists(id).build().execute();
 
         List<PlaylistModel> list = new ArrayList<>();
@@ -130,9 +143,10 @@ public class SearchController {
         return map;
     }
 
-    //http://localhost:8080/api/search/track?id=positions
+    // http://localhost:8080/api/search/track?id=positions
     @GetMapping("/track")
-    public Map<String, Object> searchTrackController(@RequestParam String id) throws ParseException, SpotifyWebApiException, IOException {
+    public Map<String, Object> searchTrackController(@RequestParam String id)
+            throws ParseException, SpotifyWebApiException, IOException {
         var response = spotifyConnect.getSpotifyApi().searchTracks(id).build().execute();
 
         List<TrackModel> list = new ArrayList<>();
@@ -152,7 +166,14 @@ public class SearchController {
             Image[] image = track.getAlbum().getImages();
             ExternalUrl externalUrlsAlbum = track.getAlbum().getExternalUrls();
 
-            albumList.add(new AlbumModel(albumName, artistsList, image, externalUrlsAlbum));
+            List<Object> albumArtistsList = new ArrayList<>();
+            ArtistSimplified[] albumArtists = track.getAlbum().getArtists();
+            for (ArtistSimplified albumArtist : albumArtists) {
+                albumArtistsList.add(albumArtist.getName());
+                albumArtistsList.add(albumArtist.getExternalUrls());
+            }
+
+            albumList.add(new AlbumModel(albumName, albumArtistsList, image, externalUrlsAlbum));
 
             list.add(new TrackModel(name, externalUrls, artistsList, albumList));
         }

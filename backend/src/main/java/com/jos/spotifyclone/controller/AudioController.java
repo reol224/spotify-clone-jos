@@ -1,19 +1,19 @@
-package main.java.com.jos.spotifyclone.controller;
+package com.jos.spotifyclone.controller;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.jos.spotifyclone.services.SpotifyConnect;
+
 import se.michaelthelin.spotify.model_objects.miscellaneous.AudioAnalysis;
 import se.michaelthelin.spotify.model_objects.specification.AudioFeatures;
-import main.java.com.jos.spotifyclone.services.SpotifyConnect;
 
 @RestController
 @RequestMapping("api/audio")
@@ -36,7 +36,7 @@ public class AudioController {
         try {
             result = spotifyConnect.getSpotifyApi().getAudioAnalysisForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
-            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
+            logger.error(ERROR_MESSAGE, e.getCause() != null ? e.getCause().getMessage() : e.getMessage(), e.getCause());
         } catch (CancellationException e) {
             logger.error(CANCELLED_MESSAGE);
         }
@@ -55,7 +55,7 @@ public class AudioController {
         try {
             result = spotifyConnect.getSpotifyApi().getAudioFeaturesForTrack(id).build().executeAsync().join();
         } catch (CompletionException e) {
-            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
+            logger.error(ERROR_MESSAGE, e.getCause() != null ? e.getCause().getMessage() : e.getMessage(), e.getCause());
         } catch (CancellationException e) {
             logger.error(CANCELLED_MESSAGE);
         }
@@ -75,7 +75,7 @@ public class AudioController {
         try {
             result = spotifyConnect.getSpotifyApi().getAudioFeaturesForSeveralTracks(ids).build().executeAsync().join();
         } catch (CompletionException e) {
-            logger.error((Marker) Level.SEVERE, ERROR_MESSAGE, e.getCause().getMessage());
+            logger.error(ERROR_MESSAGE, e.getCause() != null ? e.getCause().getMessage() : e.getMessage(), e.getCause());
         } catch (CancellationException e) {
             logger.error(CANCELLED_MESSAGE);
         }

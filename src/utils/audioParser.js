@@ -294,10 +294,12 @@ export async function parseAudioFile(file) {
     ...metadata,
     duration,
     audioUrl,
+    file, // Store the file reference for playback
     fileName: file.name,
     fileSize: file.size,
     fileType: file.type,
     addedAt: new Date().toISOString(),
+    isFavorite: false, // Initialize favorite status
     /**
      * Call this when the audio URL is no longer needed to free the object URL
      * and prevent memory leaks. After calling, audioUrl will no longer be valid.
