@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { getLibrary, subscribe, removeSongFromPlaylist, getSongsForPlaylist } from '../utils/musicStore';
+import { playlistsAPI } from '../services/api';
 import * as playerStore from '../utils/playerStore';
 import { Play, Trash2, Plus } from 'lucide-react';
 import { formatDuration } from '../utils/audioParser';
@@ -9,13 +9,58 @@ import './Playlists.css';
 const PlaylistView = () => {
   const { playlistId } = useParams();
   const history = useHistory();
-  const [library, setLibrary] = useState(getLibrary());
   const [playlist, setPlaylist] = useState(null);
+  const [tracks, setTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [contextMenu, setContextMenu] = useState(null);
 
   useEffect(() => {
-    return subscribe((lib) => setLibrary({ ...lib }));
-  }, []);
+    loadPlaylist();
+  }, [playlistId]);
+
+  const loadPlaylist = async () => {
+    try {
+      setLoading(true);
+      const [playlistData, tracksData] = await Promise.all([
+        playlistsAPI.getPlaylistById(playlistId),
+        playlistsAPI.getPlaylistTracks(playlistId)
+      ]);
+      setPlaylist(playlistData);
+      setTracks(tracksData);
+    } catch (error) {
+      console.error('Failed to load playlist:', error);
+      setPlaylist(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePlaySong = (song) => {
+    if (tracks?.length > 0) {
+      playerStore.playSong(song, tracks);
+    }
+  };
+
+  const handleRemoveSong = async (e, song) => {
+    e.stopPropagation();
+    try {
+      await playlistsAPI.removeTrackFromPlaylist(playlistId, song.id);
+      await loadPlaylist();
+    } catch (error) {
+      console.error('Failed to remove song:', error);
+    }
+    setContextMenu(null);
+  };
+
+  const handleContextMenu = (e, song) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      song: song,
+    });
+  };
 
   useEffect(() => {
     if (contextMenu) {
@@ -33,64 +78,26 @@ const PlaylistView = () => {
     }
   }, [contextMenu]);
 
-  useEffect(() => {
-    const foundPlaylist = library.playlists?.find(p => p.id === playlistId);
-    if (!foundPlaylist) {
-      setPlaylist(null);
-      return;
-    }
-
-    const songs = getSongsForPlaylist(playlistId);
-    setPlaylist({ ...foundPlaylist, songs });
-  }, [library, playlistId]);
-
-  const handlePlaySong = (song) => {
-    if (playlist?.songs) {
-      playerStore.playSong(song, playlist.songs);
-    }
-  };
-
-  const handleRemoveSong = (e, song) => {
-    e.stopPropagation();
-    removeSongFromPlaylist(playlistId, song.id);
-    setContextMenu(null);
-  };
-
-  const handleContextMenu = (e, song) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      song: song,
-    });
-  };
-
-  if (!playlist) {
+  if (loading) {
     return (
       <div className="playlist-view">
-        <p style={{ color: '#b3b3b3', padding: '20px' }}>Playlist not found</p>
-        <button onClick={() => history.push('/library')} className="back-btn">
-          Back to Library
-        </button>
+        <p style={{ color: '#b3b3b3', padding: '20px' }}>Loading...</p>
       </div>
     );
   }
-
-  const songs = playlist.songs || [];
 
   return (
     <div className="playlist-view">
       <div className="playlist-header">
         <h2 className="playlist-title">{playlist.name}</h2>
-        <p className="playlist-info">{songs.length} songs</p>
+        <p className="playlist-info">{tracks.length} songs</p>
       </div>
 
-      {songs.length === 0 ? (
+      {tracks.length === 0 ? (
         <p style={{ color: '#b3b3b3', padding: '20px' }}>No songs in this playlist</p>
       ) : (
         <div className="songs-list">
-          {songs.map((song) => (
+          {tracks.map((song) => (
             <div
               key={song.id}
               className="song-row"

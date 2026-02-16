@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Upload, Music, X, Loader2, CheckCircle, AlertCircle, FolderOpen } from 'lucide-react';
-import { parseAudioFiles } from '../utils/audioParser';
+import { libraryAPI } from '../services/api';
 import { addSongs } from '../utils/musicStore';
 import './ImportMusic.css';
 
@@ -33,25 +33,46 @@ const ImportMusic = ({ onImportComplete }) => {
     setResults(null);
 
     try {
-      const parsed = await parseAudioFiles(files, (current, total, fileName) => {
-        setProgress({ current, total, fileName });
+      // Filter audio files
+      const audioExtensions = ['.mp3', '.m4a', '.flac', '.wav', '.ogg', '.aac', '.wma', '.opus', '.webm'];
+      const audioFiles = Array.from(files).filter(f => {
+        const ext = '.' + f.name.split('.').pop().toLowerCase();
+        return audioExtensions.includes(ext) || f.type.startsWith('audio/');
       });
 
-      if (parsed.length === 0) {
+      if (audioFiles.length === 0) {
         setError('No audio files found. Supported formats: MP3, M4A, FLAC, WAV, OGG, AAC, OPUS');
         setIsProcessing(false);
         return;
       }
 
-      addSongs(parsed);
-      setResults(parsed);
+      // Set initial progress
+      setProgress({ current: 0, total: audioFiles.length, fileName: 'Uploading...' });
+
+      // Upload to backend
+      const response = await libraryAPI.uploadTracks(audioFiles, (percentComplete) => {
+        const current = Math.floor((percentComplete / 100) * audioFiles.length);
+        setProgress({ 
+          current, 
+          total: audioFiles.length, 
+          fileName: `Uploading ${current} of ${audioFiles.length}...` 
+        });
+      });
+
+      if (!response.success) {
+        throw new Error(response.error || 'Upload failed');
+      }
+
+      // Add to local store
+      addSongs(response.tracks);
+      setResults(response.tracks);
 
       if (onImportComplete) {
-        onImportComplete(parsed);
+        onImportComplete(response.tracks);
       }
     } catch (err) {
       console.error('Import error:', err);
-      setError('Failed to import some files. Please try again.');
+      setError('Failed to import files. Please make sure the backend server is running.');
     }
 
     setIsProcessing(false);
@@ -198,7 +219,7 @@ const ImportMusic = ({ onImportComplete }) => {
           </div>
           <h3 className="processing-title">Processing your music...</h3>
           <p className="processing-info">
-            Parsing {progress.current} of {progress.total} files
+            The server is parsing metadata for {progress.total} file{progress.total !== 1 ? 's' : ''}
           </p>
           {progress.fileName && (
             <p className="processing-file">{progress.fileName}</p>

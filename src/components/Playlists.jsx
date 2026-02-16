@@ -1,21 +1,33 @@
 import React, {useEffect, useState} from "react";
-import { getLibrary, subscribe } from '../utils/musicStore';
+import { playlistsAPI } from '../services/api';
 import './Playlists.css'
 
 const Playlists = ({ onSelectPlaylist }) => {
-  const [library, setLibrary] = useState(getLibrary());
+  const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return subscribe(setLibrary);
+    loadPlaylists();
   }, []);
 
-  const playlists = library.playlists || [];
+  const loadPlaylists = async () => {
+    try {
+      const data = await playlistsAPI.getAllPlaylists();
+      setPlaylists(data);
+    } catch (error) {
+      console.error('Failed to load playlists:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="playlists-panel">
       <div>
         <h3 className="playlists-title">Playlists</h3>
-        {playlists.length === 0 ? (
+        {loading ? (
+          <p style={{ color: '#b3b3b3', fontSize: '14px', padding: '0 8px' }}>Loading...</p>
+        ) : playlists.length === 0 ? (
           <p style={{ color: '#b3b3b3', fontSize: '14px', padding: '0 8px' }}>No playlists yet</p>
         ) : (
           playlists.map((playlist) => 

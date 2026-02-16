@@ -5,11 +5,13 @@ A lightweight Node.js backend for your offline music player.
 ## Features
 
 - 🎵 Local music library management
-- 📁 File upload with metadata extraction (ID3 tags)
-- 🎨 Album art extraction and serving
+- 📁 **Server-side file upload with metadata extraction** (ID3 tags)
+- 🚀 **Bulk upload support** - upload multiple files at once
+- 🎨 Album art extraction and serving (converted to base64)
 - 📝 Playlist management (CRUD operations)
 - 🔊 Audio streaming with range request support
 - 💾 SQLite database for fast metadata queries
+- ⚡ **Heavy lifting on server** - all parsing done backend
 
 ## Setup
 
@@ -33,6 +35,7 @@ The server will run on `http://localhost:3001`
 - `GET /api/library/tracks` - Get all tracks
 - `GET /api/library/tracks/:id` - Get track by ID
 - `POST /api/library/upload` - Upload a music file
+- `POST /api/library/upload-bulk` - **NEW**: Bulk upload with server-side metadata parsing
 - `DELETE /api/library/tracks/:id` - Delete a track
 - `POST /api/library/scan` - Scan directory (coming soon)
 

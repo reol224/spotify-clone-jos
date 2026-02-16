@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
 import { initDatabase } from './services/database.js';
 import libraryRoutes from './routes/library.js';
 import playlistRoutes from './routes/playlists.js';
@@ -7,6 +9,12 @@ import streamRoutes from './routes/stream.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Middleware
 app.use(cors());
