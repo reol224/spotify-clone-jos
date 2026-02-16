@@ -86,14 +86,16 @@ function App() {
 
   const handleProgressClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    let percent = (e.clientX - rect.left) / rect.width;
+    percent = Math.max(0, Math.min(1, percent));
     const newTime = percent * playerState.duration;
     playerStore.seek(newTime);
   };
 
   const handleVolumeClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    let percent = (e.clientX - rect.left) / rect.width;
+    percent = Math.max(0, Math.min(1, percent));
     playerStore.setVolume(percent);
   };
 

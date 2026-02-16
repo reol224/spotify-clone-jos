@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { getLibrary, subscribe, removeSongFromPlaylist, getSongsForPlaylist } from '../utils/musicStore';
 import * as playerStore from '../utils/playerStore';
 import { Play, Trash2, Plus } from 'lucide-react';
+import { formatDuration } from '../utils/audioParser';
 import './Playlists.css';
 
 const PlaylistView = () => {
   const { playlistId } = useParams();
+  const history = useHistory();
   const [library, setLibrary] = useState(getLibrary());
   const [playlist, setPlaylist] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
 
   useEffect(() => {
-    return subscribe(setLibrary);
+    return subscribe((lib) => setLibrary({ ...lib }));
   }, []);
+
+  useEffect(() => {
+    if (contextMenu) {
+      const handleDocumentClick = () => {
+        setContextMenu(null);
+      };
+      
+      document.addEventListener('click', handleDocumentClick);
+      document.addEventListener('contextmenu', handleDocumentClick);
+      
+      return () => {
+        document.removeEventListener('click', handleDocumentClick);
+        document.removeEventListener('contextmenu', handleDocumentClick);
+      };
+    }
+  }, [contextMenu]);
 
   useEffect(() => {
     const foundPlaylist = library.playlists?.find(p => p.id === playlistId);
@@ -28,7 +46,7 @@ const PlaylistView = () => {
 
   const handlePlaySong = (song) => {
     if (playlist?.songs) {
-      playerStore.playSongs(playlist.songs, song.id);
+      playerStore.playSong(song, playlist.songs);
     }
   };
 
@@ -52,7 +70,7 @@ const PlaylistView = () => {
     return (
       <div className="playlist-view">
         <p style={{ color: '#b3b3b3', padding: '20px' }}>Playlist not found</p>
-        <button onClick={() => (window.location.href = '/library')} className="back-btn">
+        <button onClick={() => history.push('/library')} className="back-btn">
           Back to Library
         </button>
       </div>
@@ -83,7 +101,7 @@ const PlaylistView = () => {
                 <div className="song-title">{song.title}</div>
                 <div className="song-artist">{song.artist}</div>
               </div>
-              <div className="song-duration">{song.duration || '0:00'}</div>
+              <div className="song-duration">{formatDuration(song.duration) || '0:00'}</div>
               <button
                 className="play-icon-btn"
                 onClick={(e) => {
