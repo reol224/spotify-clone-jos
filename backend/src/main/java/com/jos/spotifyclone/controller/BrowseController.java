@@ -3,6 +3,7 @@ package com.jos.spotifyclone.controller;
 import com.jos.spotifyclone.model.AlbumModel;
 import com.jos.spotifyclone.model.ArtistModel;
 import com.jos.spotifyclone.model.EpisodeModel;
+import com.jos.spotifyclone.model.ShowModel;
 import com.jos.spotifyclone.model.TrackModel;
 import com.jos.spotifyclone.services.SpotifyConnect;
 import com.neovisionaries.i18n.CountryCode;
@@ -286,41 +287,53 @@ public class BrowseController {
     // http://localhost:8080/api/browse/artists/related?artist_id=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists/related")
     public Map<String, Object> getArtistsRelatedArtists(@RequestParam String artist_id) {
-        Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().executeAsync()
-                .join();
-
-        List<ArtistModel> list = new ArrayList<>();
-        for (Artist artist : response) {
-            ExternalUrl externalUrl = artist.getExternalUrls();
-            Followers followers = artist.getFollowers();
-            String[] genres = artist.getGenres();
-            Image[] images = artist.getImages();
-            String artistName = artist.getName();
-
-            list.add(new ArtistModel(externalUrl, followers, genres, images, artistName));
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("Related artists", list);
+        try {
+            Artist[] response = spotifyConnect.getSpotifyApi().getArtistsRelatedArtists(artist_id).build().executeAsync()
+                    .join();
+
+            List<ArtistModel> list = new ArrayList<>();
+            for (Artist artist : response) {
+                ExternalUrl externalUrl = artist.getExternalUrls();
+                Followers followers = artist.getFollowers();
+                String[] genres = artist.getGenres();
+                Image[] images = artist.getImages();
+                String artistName = artist.getName();
+
+                list.add(new ArtistModel(externalUrl, followers, genres, images, artistName));
+            }
+            map.put("Related artists", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/artists?ids=0LcJLqbBmaGUft1e9Mm8HV
     @GetMapping("/artists")
     public Map<String, Object> getSeveralArtists(@RequestParam String[] ids) {
-        Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().executeAsync().join();
-
-        List<ArtistModel> list = new ArrayList<>();
-        for (Artist artist : response) {
-            ExternalUrl externalUrl = artist.getExternalUrls();
-            Followers followers = artist.getFollowers();
-            String[] genres = artist.getGenres();
-            Image[] images = artist.getImages();
-            String artistName = artist.getName();
-
-            list.add(new ArtistModel(externalUrl, followers, genres, images, artistName));
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("Artists", list);
+        try {
+            Artist[] response = spotifyConnect.getSpotifyApi().getSeveralArtists(ids).build().executeAsync().join();
+
+            List<ArtistModel> list = new ArrayList<>();
+            for (Artist artist : response) {
+                ExternalUrl externalUrl = artist.getExternalUrls();
+                Followers followers = artist.getFollowers();
+                String[] genres = artist.getGenres();
+                Image[] images = artist.getImages();
+                String artistName = artist.getName();
+
+                list.add(new ArtistModel(externalUrl, followers, genres, images, artistName));
+            }
+            map.put("Artists", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
@@ -328,12 +341,18 @@ public class BrowseController {
     // http://localhost:8080/api/browse/category?id=classical
     @GetMapping("/category")
     public Map<String, Object> getCategory(@RequestParam String id) {
-        Category response = spotifyConnect.getSpotifyApi().getCategory(id).build().executeAsync().join();
-        String categoryName = response.getName();
-        String href = response.getHref();
         Map<String, Object> map = new HashMap<>();
-        map.put("Category name", categoryName);
-        map.put("href", href);
+        try {
+            Category response = spotifyConnect.getSpotifyApi().getCategory(id).build().executeAsync().join();
+            String categoryName = response.getName();
+            String href = response.getHref();
+            map.put("Category name", categoryName);
+            map.put("href", href);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
@@ -341,182 +360,195 @@ public class BrowseController {
     // http://localhost:8080/api/browse/categories/playlist?id=classical
     @GetMapping("/categories/playlist")
     public Map<String, Object> getCategoryPlaylist(@RequestParam String id) {
-        var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().executeAsync().join();
-
-        List<Object> list = new ArrayList<>();
-        for (PlaylistSimplified playlist : response.getItems()) {
-            ExternalUrl externalUrl = playlist.getExternalUrls();
-            String name = playlist.getName();
-
-            list.add(name);
-            list.add(externalUrl);
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("Details", list);
+        try {
+            var response = spotifyConnect.getSpotifyApi().getCategorysPlaylists(id).build().executeAsync().join();
+
+            List<Object> list = new ArrayList<>();
+            for (PlaylistSimplified playlist : response.getItems()) {
+                ExternalUrl externalUrl = playlist.getExternalUrls();
+                String name = playlist.getName();
+
+                list.add(name);
+                list.add(externalUrl);
+            }
+            map.put("Details", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     @GetMapping("/categories")
     public Map<String, Object> getListOfCategories() {
-        var response = spotifyConnect.getSpotifyApi().getListOfCategories().build().executeAsync().join();
-
-        List<String> list = new ArrayList<>();
-        for (Category category : response.getItems()) {
-            String href = category.getHref();
-            String name = category.getName();
-
-            list.add(href);
-            list.add(name);
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("List of categories", list);
+        try {
+            var response = spotifyConnect.getSpotifyApi().getListOfCategories().build().executeAsync().join();
+
+            List<String> list = new ArrayList<>();
+            for (Category category : response.getItems()) {
+                String href = category.getHref();
+                String name = category.getName();
+
+                list.add(href);
+                list.add(name);
+            }
+            map.put("List of categories", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/episode?id=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episode")
     public Map<String, Object> getEpisode(@RequestParam String id) {
-        Episode response = spotifyConnect.getSpotifyApi().getEpisode(id).build().executeAsync().join();
-
-        String name = response.getName();
-        String[] language = response.getLanguages();
-        Image[] images = response.getImages();
-        ExternalUrl externalUrls = response.getExternalUrls();
-        String description = response.getDescription();
-
         Map<String, Object> map = new HashMap<>();
-        map.put("Episode name", name);
-        map.put("Language", language);
-        map.put("Images", images);
-        map.put("External urls", externalUrls);
-        map.put("Description", description);
+        try {
+            Episode response = spotifyConnect.getSpotifyApi().getEpisode(id).build().executeAsync().join();
+
+            String name = response.getName();
+            String[] language = response.getLanguages();
+            Image[] images = response.getImages();
+            ExternalUrl externalUrls = response.getExternalUrls();
+            String description = response.getDescription();
+
+            map.put("Episode name", name);
+            map.put("Language", language);
+            map.put("Images", images);
+            map.put("External urls", externalUrls);
+            map.put("Description", description);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/episodes?ids=4GI3dxEafwap1sFiTGPKd1
     @GetMapping("/episodes")
-    public Map<String, Object> getSeveralEpisodes(@RequestParam String ids) {
-        Episode response = spotifyConnect.getSpotifyApi().getEpisode(ids).build().executeAsync().join();
-
-        String name = response.getName();
-        String[] language = response.getLanguages();
-        Image[] images = response.getImages();
-        ExternalUrl externalUrls = response.getExternalUrls();
-        String description = response.getDescription();
-
+    public Map<String, Object> getSeveralEpisodes(@RequestParam String[] ids) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Episode name", name);
-        map.put("Language", language);
-        map.put("Images", images);
-        map.put("External urls", externalUrls);
-        map.put("Description", description);
+        try {
+            Episode[] response = spotifyConnect.getSpotifyApi().getSeveralEpisodes(ids).build().executeAsync().join();
+            List<EpisodeModel> list = new ArrayList<>();
+            if (response != null) {
+                for (Episode episode : response) {
+                    if (episode == null) continue;
+                    String name = episode.getName();
+                    String[] language = episode.getLanguages();
+                    Image[] images = episode.getImages();
+                    ExternalUrl externalUrls = episode.getExternalUrls();
+                    String description = episode.getDescription();
+                    list.add(new EpisodeModel(name, language, images, externalUrls, description));
+                }
+            }
+            map.put("Episodes", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/show?id=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/show")
     public Map<String, Object> getShow(@RequestParam String id) {
-        Show response = spotifyConnect.getSpotifyApi().getShow(id).build().executeAsync().join();
-        String description = response.getDescription();
-        String name = response.getName();
-        ExternalUrl externalUrls = response.getExternalUrls();
-
         Map<String, Object> map = new HashMap<>();
-        map.put("Description", description);
-        map.put("Name", name);
-        map.put("External urls", externalUrls);
+        try {
+            Show response = spotifyConnect.getSpotifyApi().getShow(id).build().executeAsync().join();
+            String description = response.getDescription();
+            String name = response.getName();
+            ExternalUrl externalUrls = response.getExternalUrls();
+
+            map.put("Description", description);
+            map.put("Name", name);
+            map.put("External urls", externalUrls);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/shows?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows")
-    public Map<String, Object> getSeveralShows(@RequestParam String ids) {
-        Show response = spotifyConnect.getSpotifyApi().getShow(ids).build().executeAsync().join();
-        String description = response.getDescription();
-        String name = response.getName();
-        ExternalUrl externalUrls = response.getExternalUrls();
-
+    public Map<String, Object> getSeveralShows(@RequestParam String[] ids) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Description", description);
-        map.put("Name", name);
-        map.put("External urls", externalUrls);
+        try {
+            Show[] response = spotifyConnect.getSpotifyApi().getSeveralShows(ids).build().executeAsync().join();
+            List<ShowModel> list = new ArrayList<>();
+            if (response != null) {
+                for (Show show : response) {
+                    if (show == null) continue;
+                    String description = show.getDescription();
+                    String name = show.getName();
+                    ExternalUrl externalUrls = show.getExternalUrls();
+                    list.add(new ShowModel(description, name, externalUrls));
+                }
+            }
+            map.put("Shows", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/shows/episodes?ids=5AvwZVawapvyhJUIx71pdJ
     @GetMapping("/shows/episodes")
     public Map<String, Object> getShowsEpisodes(@RequestParam String ids) {
-        var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().executeAsync().join();
-
-        List<EpisodeModel> list = new ArrayList<>();
-        for (EpisodeSimplified episode : response.getItems()) {
-            String name = episode.getName();
-            String[] language = episode.getLanguages();
-            Image[] images = episode.getImages();
-            ExternalUrl externalUrls = episode.getExternalUrls();
-            String description = episode.getDescription();
-
-            list.add(new EpisodeModel(name, language, images, externalUrls, description));
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("Shows episodes", list);
+        try {
+            var response = spotifyConnect.getSpotifyApi().getShowEpisodes(ids).build().executeAsync().join();
+
+            List<EpisodeModel> list = new ArrayList<>();
+            for (EpisodeSimplified episode : response.getItems()) {
+                String name = episode.getName();
+                String[] language = episode.getLanguages();
+                Image[] images = episode.getImages();
+                ExternalUrl externalUrls = episode.getExternalUrls();
+                String description = episode.getDescription();
+
+                list.add(new EpisodeModel(name, language, images, externalUrls, description));
+            }
+            map.put("Shows episodes", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     // http://localhost:8080/api/browse/track?id=01iyCAUm8EvOFqVWYJ3dVX
     @GetMapping("/track")
     public Map<String, Object> getTrack(@RequestParam String id) {
-        Track response = spotifyConnect.getSpotifyApi().getTrack(id).build().executeAsync().join();
-
-        List<TrackModel> list = new ArrayList<>();
-        String name = response.getName();
-        ExternalUrl externalUrls = response.getExternalUrls();
-
-        List<Object> artistsList = new ArrayList<>();
-        ArtistSimplified[] artists = response.getArtists();
-        for (ArtistSimplified artist : artists) {
-            artistsList.add(artist.getName());
-            artistsList.add(artist.getExternalUrls());
-        }
-
-        List<AlbumModel> albumsList = new ArrayList<>();
-        AlbumSimplified albums = response.getAlbum();
-        String nameAlbum = albums.getName();
-        Image[] imageAlbum = albums.getImages();
-        ExternalUrl externalUrlAlbum = albums.getExternalUrls();
-        List<Object> artistOfAlbumList = new ArrayList<>();
-        ArtistSimplified[] artistOfAlbum = albums.getArtists();
-        for (ArtistSimplified artistSimplified : artistOfAlbum) {
-            artistOfAlbumList.add(artistSimplified.getName());
-            artistOfAlbumList.add(artistSimplified.getExternalUrls());
-        }
-        albumsList.add(new AlbumModel(nameAlbum, artistOfAlbumList, imageAlbum, externalUrlAlbum));
-
-        list.add(new TrackModel(name, externalUrls, artistsList, albumsList));
-
         Map<String, Object> map = new HashMap<>();
-        map.put("Track", list);
-        return map;
-    }
+        try {
+            Track response = spotifyConnect.getSpotifyApi().getTrack(id).build().executeAsync().join();
 
-    // http://localhost:8080/api/browse/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
-    @GetMapping("/tracks")
-    public Map<String, Object> getSeveralTracks(@RequestParam String[] ids) {
-        Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().executeAsync().join();
-
-        List<TrackModel> list = new ArrayList<>();
-        for (Track track : response) {
-            String name = track.getName();
-            ExternalUrl externalUrls = track.getExternalUrls();
+            List<TrackModel> list = new ArrayList<>();
+            String name = response.getName();
+            ExternalUrl externalUrls = response.getExternalUrls();
 
             List<Object> artistsList = new ArrayList<>();
-            ArtistSimplified[] artists = track.getArtists();
+            ArtistSimplified[] artists = response.getArtists();
             for (ArtistSimplified artist : artists) {
                 artistsList.add(artist.getName());
+                artistsList.add(artist.getExternalUrls());
             }
 
             List<AlbumModel> albumsList = new ArrayList<>();
-            AlbumSimplified albums = track.getAlbum();
+            AlbumSimplified albums = response.getAlbum();
             String nameAlbum = albums.getName();
             Image[] imageAlbum = albums.getImages();
             ExternalUrl externalUrlAlbum = albums.getExternalUrls();
@@ -529,46 +561,93 @@ public class BrowseController {
             albumsList.add(new AlbumModel(nameAlbum, artistOfAlbumList, imageAlbum, externalUrlAlbum));
 
             list.add(new TrackModel(name, externalUrls, artistsList, albumsList));
+
+            map.put("Track", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
         }
+        return map;
+    }
+
+    // http://localhost:8080/api/browse/tracks?ids=01iyCAUm8EvOFqVWYJ3dVX
+    @GetMapping("/tracks")
+    public Map<String, Object> getSeveralTracks(@RequestParam String[] ids) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Track", list);
+        try {
+            Track[] response = spotifyConnect.getSpotifyApi().getSeveralTracks(ids).build().executeAsync().join();
+
+            List<TrackModel> list = new ArrayList<>();
+            for (Track track : response) {
+                String name = track.getName();
+                ExternalUrl externalUrls = track.getExternalUrls();
+
+                List<Object> artistsList = new ArrayList<>();
+                ArtistSimplified[] artists = track.getArtists();
+                for (ArtistSimplified artist : artists) {
+                    artistsList.add(artist.getName());
+                }
+
+                List<AlbumModel> albumsList = new ArrayList<>();
+                AlbumSimplified albums = track.getAlbum();
+                String nameAlbum = albums.getName();
+                Image[] imageAlbum = albums.getImages();
+                ExternalUrl externalUrlAlbum = albums.getExternalUrls();
+                List<Object> artistOfAlbumList = new ArrayList<>();
+                ArtistSimplified[] artistOfAlbum = albums.getArtists();
+                for (ArtistSimplified artistSimplified : artistOfAlbum) {
+                    artistOfAlbumList.add(artistSimplified.getName());
+                    artistOfAlbumList.add(artistSimplified.getExternalUrls());
+                }
+                albumsList.add(new AlbumModel(nameAlbum, artistOfAlbumList, imageAlbum, externalUrlAlbum));
+
+                list.add(new TrackModel(name, externalUrls, artistsList, albumsList));
+            }
+            map.put("Track", list);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 
     @GetMapping("/genre-seeds")
     public String[] getGenreSeeds() {
-        return spotifyConnect.getSpotifyApi().getAvailableGenreSeeds().build().executeAsync().join();
+        try {
+            return spotifyConnect.getSpotifyApi().getAvailableGenreSeeds().build().executeAsync().join();
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
+        return new String[0];
     }
 
     // http://localhost:8080/api/browse/search?name=abba&type=artist
     @GetMapping("/search")
     public Map<String, Object> searchItems(@RequestParam String name) {
-        SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build()
-                .executeAsync().join();
-        AlbumSimplified[] albums = searchResult.getAlbums().getItems();
-
-        // using streams
-        List<AlbumModel> streamAlbum = Arrays.stream(albums)
-                .map(i -> new AlbumModel(i.getName(),
-                        Arrays.stream(i.getArtists())
-                                .map(ArtistSimplified::getName)
-                                .collect(Collectors.toList()),
-                        i.getImages(), i.getExternalUrls()))
-                .collect(Collectors.toList());
-
-        // for loop
-        List<AlbumModel> newList = new ArrayList<>();
-        for (AlbumSimplified i : albums) {
-            List<Object> artists = new ArrayList<>();
-            ArtistSimplified[] artistArray = i.getArtists();
-            for (ArtistSimplified artistSimplified : artistArray) {
-                artists.add(artistSimplified.getName());
-                artists.add(artistSimplified.getExternalUrls());
-            }
-            newList.add(new AlbumModel(i.getName(), artists, i.getImages(), i.getExternalUrls()));
-        }
         Map<String, Object> map = new HashMap<>();
-        map.put("Albums", streamAlbum);
+        try {
+            SearchResult searchResult = spotifyConnect.getSpotifyApi().searchItem(name, "album,track,playlist").build()
+                    .executeAsync().join();
+            AlbumSimplified[] albums = searchResult.getAlbums().getItems();
+
+            List<AlbumModel> streamAlbum = Arrays.stream(albums)
+                    .map(i -> new AlbumModel(i.getName(),
+                            Arrays.stream(i.getArtists())
+                                    .map(ArtistSimplified::getName)
+                                    .collect(Collectors.toList()),
+                            i.getImages(), i.getExternalUrls()))
+                    .collect(Collectors.toList());
+
+            map.put("Albums", streamAlbum);
+        } catch (CompletionException e) {
+            logger.error("Error: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+        } catch (CancellationException e) {
+            logger.error("Async operation cancelled.");
+        }
         return map;
     }
 }

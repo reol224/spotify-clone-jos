@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,19 +109,19 @@ public class PlaylistsController {
                 .execute();
     }
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     public SnapshotResult addItemsTo(@RequestParam String playlist_id, @RequestParam String[] uris)
             throws ParseException, SpotifyWebApiException, IOException {
         return spotifyConnect.getSpotifyApi().addItemsToPlaylist(playlist_id, uris).build().execute();
     }
 
-    @GetMapping("/remove")
+    @DeleteMapping("/remove")
     public SnapshotResult removeItemsFrom(@RequestParam String playlist_id, @RequestParam JsonArray tracks)
             throws ParseException, SpotifyWebApiException, IOException {
         return spotifyConnect.getSpotifyApi().removeItemsFromPlaylist(playlist_id, tracks).build().execute();
     }
 
-    @GetMapping("/reorder")
+    @PutMapping("/reorder")
     public SnapshotResult reorderItemsFrom(@RequestParam String playlist_id, @RequestParam int range_start,
             @RequestParam int range_length, @RequestParam int insertBefore)
             throws ParseException, SpotifyWebApiException, IOException {
@@ -126,7 +129,7 @@ public class PlaylistsController {
                 .execute();
     }
 
-    @GetMapping("/replace")
+    @PutMapping("/replace")
     public String replaceItemsFrom(@RequestParam String playlist_id, @RequestParam String[] uris)
             throws ParseException, SpotifyWebApiException, IOException {
         return spotifyConnect.getSpotifyApi().replacePlaylistsItems(playlist_id, uris).build().execute();

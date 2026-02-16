@@ -86,22 +86,24 @@ public class PlayerController {
         var response = spotifyConnect.getSpotifyApi().getInformationAboutUsersCurrentPlayback()
                 .setQueryParameter("market", market)
                 .build().execute();
-        String deviceName = response.getDevice().getName();
-        String deviceType = response.getDevice().getType();
-        Integer volumeLevel = response.getDevice().getVolume_percent();
-        Boolean deviceActive = response.getDevice().getIs_active();
-        Boolean isPlaying = response.getIs_playing();
         Map<String, Object> map = new HashMap<>();
+        if (response == null) {
+            return map;
+        }
+        if (response.getDevice() != null) {
+            map.put("Device name", response.getDevice().getName());
+            map.put("Device type", response.getDevice().getType());
+            map.put("Volume level", response.getDevice().getVolume_percent());
+            map.put("Device active", response.getDevice().getIs_active());
+        }
+        if (response.getIs_playing() != null) {
+            map.put("Is playing", response.getIs_playing());
+        }
         IPlaylistItem playlistItem = response.getItem();
-        String name = playlistItem.getName();
-        ExternalUrl externalUrl = playlistItem.getExternalUrls();
-        map.put("Device name", deviceName);
-        map.put("Device type", deviceType);
-        map.put("Volume level", volumeLevel);
-        map.put("Device active", deviceActive);
-        map.put("Is playing", isPlaying);
-        map.put("Track name", name);
-        map.put("External url", externalUrl);
+        if (playlistItem != null) {
+            map.put("Track name", playlistItem.getName());
+            map.put("External url", playlistItem.getExternalUrls());
+        }
 
         return map;
     }
@@ -222,7 +224,7 @@ public class PlayerController {
     @GetMapping("/previous")
     public String previousPlayback(@RequestParam(required = false) String device_id)
             throws ParseException, SpotifyWebApiException, IOException {
-        String response = spotifyConnect.getSpotifyApi().skipUsersPlaybackToNextTrack().build().execute();
+        String response = spotifyConnect.getSpotifyApi().skipUsersPlaybackToPreviousTrack().build().execute();
         return "Skipped to previous track";
     }
 

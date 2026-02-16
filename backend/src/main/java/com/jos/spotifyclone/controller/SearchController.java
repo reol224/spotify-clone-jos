@@ -166,7 +166,14 @@ public class SearchController {
             Image[] image = track.getAlbum().getImages();
             ExternalUrl externalUrlsAlbum = track.getAlbum().getExternalUrls();
 
-            albumList.add(new AlbumModel(albumName, artistsList, image, externalUrlsAlbum));
+            List<Object> albumArtistsList = new ArrayList<>();
+            ArtistSimplified[] albumArtists = track.getAlbum().getArtists();
+            for (ArtistSimplified albumArtist : albumArtists) {
+                albumArtistsList.add(albumArtist.getName());
+                albumArtistsList.add(albumArtist.getExternalUrls());
+            }
+
+            albumList.add(new AlbumModel(albumName, albumArtistsList, image, externalUrlsAlbum));
 
             list.add(new TrackModel(name, externalUrls, artistsList, albumList));
         }

@@ -294,7 +294,7 @@ public class UserController {
      *                   followed.
      */
     @GetMapping("/unfollow/playlist")
-    public String unfollowPlaylist(String ownerId, @RequestParam String playlistId)
+    public String unfollowPlaylist(@RequestParam String ownerId, @RequestParam String playlistId)
             throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().unfollowPlaylist(ownerId, playlistId).build().execute();
         return "You are not following " + playlistId.replaceAll("\\[(.*?)\\]", "$1") + " anymore.";
@@ -476,7 +476,7 @@ public class UserController {
     @GetMapping("/remove/tracks")
     public String removeTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().removeUsersSavedTracks(ids).build().execute();
-        return "Success! Track/s with id/s " + ids + "was/were deleted.";
+        return "Success! Track/s with id/s " + Arrays.toString(ids) + " was/were deleted.";
     }
 
     /**
@@ -491,7 +491,7 @@ public class UserController {
     @GetMapping("/save/albums")
     public String saveAlbums(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().saveAlbumsForCurrentUser(ids).build().execute();
-        return "Success! Album/s with id/s " + ids + "was/were saved.";
+        return "Success! Album/s with id/s " + Arrays.toString(ids) + " was/were saved.";
     }
 
     /**
@@ -505,7 +505,7 @@ public class UserController {
     @GetMapping("/save/shows")
     public String saveShows(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().saveShowsForCurrentUser(ids).build().execute();
-        return "Success! Show/s with id/s " + ids + "was/were saved.";
+        return "Success! Show/s with id/s " + Arrays.toString(ids) + " was/were saved.";
     }
 
     /**
@@ -520,7 +520,7 @@ public class UserController {
     @GetMapping("/save/tracks")
     public String saveTracks(@RequestParam String[] ids) throws ParseException, SpotifyWebApiException, IOException {
         String response = spotifyConnect.getSpotifyApi().saveTracksForUser(ids).build().execute();
-        return "Success! Track/s with id/s " + ids + "was/were saved.";
+        return "Success! Track/s with id/s " + Arrays.toString(ids) + " was/were saved.";
     }
 
     /**
@@ -538,10 +538,10 @@ public class UserController {
             if (b) {
                 // regex removes square brackets with any content between them
                 return "You already have the "
-                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " albums saved.");
+                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " albums saved.";
             }
         }
-        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " albums.");
+        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " albums.";
     }
 
     /**
@@ -558,10 +558,10 @@ public class UserController {
         for (Boolean b : response) {
             if (b) {
                 // regex removes square brackets with any content between them
-                return "You already have the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " shows saved.");
+                return "You already have the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " shows saved.";
             }
         }
-        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " shows.");
+        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " shows.";
 
     }
 
@@ -580,10 +580,10 @@ public class UserController {
             if (b) {
                 // regex removes square brackets with any content between them
                 return "You already have the "
-                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " tracks saved.");
+                        + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " tracks saved.";
             }
         }
-        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1" + " tracks.");
+        return "You didn't save the " + Arrays.toString(ids).replaceAll("\\[(.*?)\\]", "$1") + " tracks.";
     }
 
     /**

@@ -94,8 +94,16 @@ public class SpotifyConnect {
 
     @Scheduled(cron = "@hourly")
     public void refreshAuthToken() {
-        spotifyApi.setAccessToken(spotifyApi.getAccessToken());
-        spotifyApi.setRefreshToken(spotifyApi.getRefreshToken());
+        try {
+            final AuthorizationCodeCredentials credentials = spotifyApi.authorizationCodeRefresh().build().execute();
+            spotifyApi.setAccessToken(credentials.getAccessToken());
+            if (credentials.getRefreshToken() != null) {
+                spotifyApi.setRefreshToken(credentials.getRefreshToken());
+            }
+            logger.log(Level.INFO, "Successfully refreshed Spotify access token.");
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            logger.log(Level.SEVERE, "Failed to refresh Spotify access token: " + e.getMessage());
+        }
     }
 
     public SpotifyApi getSpotifyApi() {

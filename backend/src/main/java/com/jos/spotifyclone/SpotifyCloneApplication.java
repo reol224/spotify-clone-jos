@@ -16,7 +16,7 @@ import com.jos.spotifyclone.config.ApplicationPropertiesConfig;
 @EnableConfigurationProperties(ApplicationPropertiesConfig.class)
 public class SpotifyCloneApplication {
 
-    @Value("spotify.api.frontendUrl")
+    @Value("${spotify.api.frontendUrl}")
     String FRONTEND_URL;
 
     public static void main(String[] args) {
@@ -28,7 +28,7 @@ public class SpotifyCloneApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/*").allowedOrigins(FRONTEND_URL);
+                registry.addMapping("/api/**").allowedOrigins(FRONTEND_URL);
             }
         };
     }
