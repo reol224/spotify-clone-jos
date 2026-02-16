@@ -10,7 +10,7 @@ export default defineConfig({
     host: process.env.TEMPO === "true" ? '0.0.0.0' : undefined,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       }
     }
